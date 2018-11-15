@@ -1,13 +1,7 @@
 language: cpp
 
 os: windows
-
-branches:
-  only:
-  - master
   
-  
- after_success:
-   - ./test.sh
+script: test.sh
  
 
