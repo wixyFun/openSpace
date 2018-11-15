@@ -8,3 +8,4 @@ resource_name = "gdnbody"
 class_name = "gdnbody"
 library = ExtResource( 1 )
 _sections_unfolded = [ "Resource" ]
+

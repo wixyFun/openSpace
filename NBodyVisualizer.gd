@@ -4,14 +4,32 @@ extends Spatial
 # var a = 2
 # var b = "textvar"
 
-var pause = true
+var pause = false
 
+var arrayPlanets = []
+onready var planet = preload("res://Planet.tscn")
 func _ready():
 	# Called when the node is added to the scene for the first time.
 	# Initialization here
-	pass
+	
+	var p = planet.instance()
+	add_child(p)
 
-#func _process(delta):
-#	# Called every frame. Delta is time since last frame.
+	#$NBodyPhysics.init(2.95912208286e-4)
+	# This is a test
+	#addPlanet(1, 0,0,0, 0,0,0)
+
+func _process(delta):
+	pass
+	# Called every frame. Delta is time since last frame.
 #	# Update game logic here.
-#	pass
+#	if (!pause):
+#		$NBodyPhysics.step(delta)
+		#visualize()
+
+func addPlanet(m, x, y, z, vx, vy, vz):
+	$NBodyPhysics.addBody(m,x,y,z,vx,vy,vz)
+	arrayPlanets.push_back(load("res://Planet.tscn"))
+	
+func visualize():
+	pass
