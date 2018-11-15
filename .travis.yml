@@ -8,6 +8,6 @@ branches:
   
   
  after_success:
-   -git test.sh
+   - ./test.sh
  
 
