@@ -14,6 +14,9 @@ func _ready():
 	
 	var p = planet.instance()
 	add_child(p)
+	p = planet.instance()
+	p.translation = Vector3(1,0,0)
+	add_child(p)
 
 	#$NBodyPhysics.init(2.95912208286e-4)
 	# This is a test
