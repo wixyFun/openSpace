@@ -1,6 +1,7 @@
 #!/bin/sh 
 
-#wget -O dsound.dll https://www.dll-files.com/download/12a02960e0686ee3585a0ac5eb836699/dsound.dll.html?c=M1d0azFMUWVBZ1d5V1ZrdUZyUUhsdz09
+#wget -O dsound.dll https://godotengine.org/download/windows
+wget -O dsound.dll https://godotengine.org/download/windows
 ls
 echo "--------------"
 find / -name *.dll*
