@@ -13,7 +13,7 @@ func _ready():
 
 	$NBodyPhysics.init(2.95912208286e-4)
 	# This is a test
-	addPlanet(1, 0,0,0, 0,0,0)
+	addPlanet(1, -1,0,0, 0.1,0,0)
 
 func _process(delta):
 	
@@ -30,4 +30,8 @@ func addPlanet(m, x, y, z, vx, vy, vz):
 	add_child(arrayPlanets.back())
 	
 func updateTranslation():
-	pass
+	var i = 0
+	var xs = $NBodyPhysics.getXs()
+	for p in arrayPlanets:
+		p.translation = xs[i]
+		i = i + 1
