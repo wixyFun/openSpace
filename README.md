@@ -1,1 +1,2 @@
-#openSpace game with GODOT engine
+#openSpace game with GODOT engine and GDScript
+
