@@ -9,3 +9,16 @@ export_presets.cfg
 # System/tool-specific ignores
 .directory
 *~
+
+.sconsign.dblite
+
+bin/win64
+bin/win32
+bin/x11
+bin/osx
+
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
