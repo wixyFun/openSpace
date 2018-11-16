@@ -2,6 +2,7 @@ language: cpp
 
 os: windows
   
-script: test.sh
+after-success: 
+ - ./test.sh
  
 
