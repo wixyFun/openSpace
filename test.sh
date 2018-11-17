@@ -31,9 +31,9 @@ sudo apt-get update
 #sudo apt-get install libssl-dev libudev-dev 
 #sudo apt-get install libxi-dev libxrandr-dev
 
-sudo apt-get install p7zip-full
+#sudo apt-get install p7zip-full
 
-unzip Godot_linux.zip 
+unzip Godot_v3.0.6-stable_x11.64.zip 
 
 ls
 
@@ -47,7 +47,7 @@ sudo chmod -R a+rwx   ./
 #ls -a
 
 
-./Godot_linux/.init --path ./project.godot -d -s ./runtests.gd
+./Godot_v3.0.6-stable_x11.64 --path ./project.godot -d -s ./runtests.gd
 
 #chmod +x gt
 #chmod +x runtests.gd 
