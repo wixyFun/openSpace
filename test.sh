@@ -43,9 +43,9 @@ ls
 
 #"./Godot_v3.0.6-stable_win64.exe" --path "./" -d -s --path  "./runtests.gd" 
 
-chmod +x ./Godot_linux
-chmod +x ./project.godot
-chmod +x ./runtests.gd 
+sudo chmod +x ./Godot_linux
+sudo chmod +x ./project.godot
+sudo chmod +x ./runtests.gd 
 
 ./Godot_linux --path ./project.godot -d -s ./runtests.gd
 
