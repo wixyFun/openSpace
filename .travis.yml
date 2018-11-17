@@ -3,7 +3,9 @@ compiler: gcc
 
 sudo: true
 
+
 script: 
+- sudo apt-get install unzip
 - chmod +x ./test.sh
 - ./test.sh
   
