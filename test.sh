@@ -31,10 +31,8 @@ sudo apt-get install libfreetype6-dev
 sudo apt-get install libssl-dev libudev-dev 
 sudo apt-get install libxi-dev libxrandr-dev
 
-#wget -O dsound.dll https://godotengine.org/download/windows
-wget -O goto_linux.zip https://godotengine.org/download/linux
-unzip goto_linux.zip
-cd goto_linux.zip 
+unzip Godot_v3.0.6-stable_x11.64.zip
+unzip Godot_v3.0.6-stable_x11.64.zip
 ls
 
 #"./Godot_v3.0.6-stable_win64.exe" --path "./" -d -s --path  "./runtests.gd" 
