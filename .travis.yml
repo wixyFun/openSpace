@@ -1,11 +1,10 @@
 language: cpp
-compiler: gcc
+os: windows
 
 
 
 
 script: 
-- sudo chmod a+rwx ./test.sh
 - ./test.sh
   
 
