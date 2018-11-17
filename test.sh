@@ -5,7 +5,7 @@ sudo apt install snapd
 sudo snap install godot
 
 echo"++++++++++++++++++++++"
-which godot 3.0.6 
+cd travis/usr/wixyFun/shared
 
 godot -s ./runtests.gd
 
