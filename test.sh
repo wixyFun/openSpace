@@ -5,7 +5,7 @@ sudo apt install snapd
 sudo snap install godot
 
 echo"++++++++++++++++++++++"
-which godot
+which godot 3.0.6 
 
 godot -s ./runtests.gd
 
