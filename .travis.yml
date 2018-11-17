@@ -7,7 +7,6 @@ install:
 - wget -O  gt1 https://github.com/godotengine/godot/releases/tag/3.0.6-stable 
 
 script: 
--ls
 -sudo -i ./test.sh
   
 
