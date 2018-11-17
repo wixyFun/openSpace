@@ -32,7 +32,7 @@ sudo apt-get install libssl-dev libudev-dev
 sudo apt-get install libxi-dev libxrandr-dev
 
 #wget -O dsound.dll https://godotengine.org/download/windows
-#wget https://godotengine.org/download/linux
+wget https://godotengine.org/download/linux
 
 #"./Godot_v3.0.6-stable_win64.exe" --path "./" -d -s --path  "./runtests.gd" 
 
