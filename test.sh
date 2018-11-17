@@ -4,6 +4,8 @@ sudo apt update
 sudo apt install snapd
 sudo snap install godot
 
+whereis godot 3.0.6
+
 
 #wget https://packages.ubuntu.com/en/trusty/scons
 #wget https://packages.ubuntu.com/trusty/libx11-dev
