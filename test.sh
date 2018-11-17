@@ -10,7 +10,7 @@
 #unzip gt.zip 
 #cd gt
 
-echo "inside---------------------"
+echo "inside-------------------------"
 ls
 #cd ..
 
