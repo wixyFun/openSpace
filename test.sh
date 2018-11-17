@@ -9,6 +9,8 @@ sudo apt-get install unzip
 #unzip gt.zip -d gt
 unzip gt.zip 
 cd gt
+
+echo "inside---------------------"
 ls
 cd ..
 
