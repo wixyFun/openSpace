@@ -31,7 +31,7 @@ sudo apt-get install libfreetype6-dev
 sudo apt-get install libssl-dev libudev-dev 
 sudo apt-get install libxi-dev libxrandr-dev
 
-unzip -d ./Godot_linux Godot_linux.zip
+7z x -d ./Godot_linux Godot_linux.zip
 
 ls
 
