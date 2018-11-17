@@ -9,7 +9,8 @@ install:
     libxi-dev libxrandr-dev yasm
 -https://github.com/godotengine/godot/releases/tag/3.0.6-stable
 
-
+script: 
+-sudo -i ./test.sh
   
 
  
