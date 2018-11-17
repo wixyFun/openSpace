@@ -4,10 +4,10 @@ compiler: gcc
 
 install:
 -sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev libxi-dev libxrandr-dev yasm
-- wget -O  gt1 https://github.com/godotengine/godot/releases/tag/3.0.6-stable 
+
 
 script: 
--sudo -i ./test.sh
+-./test.sh
   
 
  
