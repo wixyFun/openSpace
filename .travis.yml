@@ -1,7 +1,8 @@
 language: cpp
+compiler: gcc
 
-os: windows
+os: linux
   
-script: ./test.sh
+
  
 
