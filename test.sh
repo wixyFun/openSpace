@@ -11,4 +11,4 @@ unzip gt.zip
 cd gt 
 ls
 
-#godot -s runtests.gd
+gt -s runtests.gd
