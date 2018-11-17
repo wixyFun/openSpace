@@ -33,7 +33,7 @@ sudo apt-get update
 
 #sudo apt-get install p7zip-full
 
-unzip Godot_v3.0.6-stable_linux_headless.64.zip 
+unzip Godot_v3.0.6-stable_linux_server.64.zip 
 
 ls
 
@@ -47,7 +47,7 @@ sudo chmod -R a+rwx   ./
 #ls -a
 
 
-./Godot_v3.0.6-stable_linux_headless.64 --path ./project.godot -d -s ./runtests.gd
+./Godot_v3.0.6-stable_linux_server.64 --path ./project.godot -d -s ./runtests.gd
 
 #chmod +x gt
 #chmod +x runtests.gd 
