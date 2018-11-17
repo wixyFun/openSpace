@@ -1,9 +1,6 @@
 #!/bin/sh 
 
-sudo apt-get install python-dev python-pip
-pip install scoop
-scoop bucket add extras
-scoop install godot
+sudo snap install godot
 
 
 #wget https://packages.ubuntu.com/en/trusty/scons
@@ -13,8 +10,8 @@ scoop install godot
 #wget https://packages.ubuntu.com/trusty/libgl1-mesa-dev
 
 #sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev \
-    libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev \
-    libxi-dev libxrandr-dev
+   # libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev \
+    #libxi-dev libxrandr-dev
 
 #wget -O dsound.dll https://godotengine.org/download/windows
 #wget https://godotengine.org/download/linux
