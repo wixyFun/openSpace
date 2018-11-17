@@ -1,5 +1,5 @@
 language: cpp
-os: windows
+compiler: gcc
 
 
 
