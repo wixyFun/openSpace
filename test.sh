@@ -35,7 +35,7 @@ sudo apt-get install p7zip-full
 
 #sudo mkdir ./Godot_linux
 
-unzip -d ./Godot_linux Godot_linux.zip 
+unzip Godot_linux.zip 
 
 ls
 
