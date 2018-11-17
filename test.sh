@@ -14,6 +14,9 @@ echo "inside---------------------"
 ls
 cd ..
 
-chmod +x ./gt chmod +x ./runtests.gd ./gt -s ./runtests.gd
+chmod +x gt
+chmod +x runtests.gd 
+
+./gt -s ./runtests.gd
 
 
