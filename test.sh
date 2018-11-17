@@ -4,7 +4,7 @@ sudo apt update
 sudo apt install snapd
 sudo snap install godot
 
--s ./runtests.gd
+godot -s ./runtests.gd
 
 
 #wget https://packages.ubuntu.com/en/trusty/scons
