@@ -8,7 +8,6 @@ sudo apt-get install unzip
 
 #unzip gt.zip -d gt
 unzip gt.zip 
-cd gt 
 ls
 
-gt -s runtests.gd
+./gt -s ./runtests.gd
