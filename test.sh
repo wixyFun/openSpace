@@ -8,8 +8,10 @@ sudo apt-get install unzip
 
 #unzip gt.zip -d gt
 unzip gt.zip 
+cd gt
 ls
+cd ..
 
-chmod +x ./gt
-chmod +x ./runtests.gd
-./gt -s ./runtests.gd
+chmod +x ./gt chmod +x ./runtests.gd ./gt -s ./runtests.gd
+
+
