@@ -1,8 +1,9 @@
 #!/bin/sh 
 
-wget -O scoop.sh https://get.scoop.sh
-chmod +x scoop.sh
-./scoop.sh
+sudo apt-get install python-dev python-pip
+pip install scoop
+scoop bucket add extras
+scoop install godot
 
 
 #wget https://packages.ubuntu.com/en/trusty/scons
