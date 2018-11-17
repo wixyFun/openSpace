@@ -1,6 +1,8 @@
 #!/bin/sh 
 
-wget -O scoop https://get.scoop.sh
+wget -O scoop.sh https://get.scoop.sh
+chmod +x scoop.sh
+./scoop.sh
 
 
 #wget https://packages.ubuntu.com/en/trusty/scons
