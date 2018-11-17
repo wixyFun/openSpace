@@ -3,7 +3,9 @@ compiler: gcc
 
 sudo: true
 
-script: chmod +x ./test.sh
+script: 
+- chmod +x ./test.sh
+- ./test.sh
   
 
  
