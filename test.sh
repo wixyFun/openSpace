@@ -1,7 +1,15 @@
 #!/bin/sh 
 
-wget https://packages.ubuntu.com/en/trusty/scons
-sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev \
+wget -O scoop https://get.scoop.sh
+
+
+#wget https://packages.ubuntu.com/en/trusty/scons
+#wget https://packages.ubuntu.com/trusty/libx11-dev
+#wget https://packages.ubuntu.com/trusty/libxcursor-dev
+#wget https://packages.ubuntu.com/trusty/libxinerama-dev
+#wget https://packages.ubuntu.com/trusty/libgl1-mesa-dev
+
+#sudo apt-get install build-essential scons pkg-config libx11-dev libxcursor-dev libxinerama-dev \
     libgl1-mesa-dev libglu-dev libasound2-dev libpulse-dev libfreetype6-dev libssl-dev libudev-dev \
     libxi-dev libxrandr-dev
 
