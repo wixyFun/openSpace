@@ -47,7 +47,7 @@ sudo chmod -R a+rwx   ./
 #ls -a
 
 
-./Godot_linux --path ./project.godot -d -s ./runtests.gd
+./Godot_linux/.init --path ./project.godot -d -s ./runtests.gd
 
 #chmod +x gt
 #chmod +x runtests.gd 
