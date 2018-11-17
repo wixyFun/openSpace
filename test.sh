@@ -10,4 +10,6 @@ sudo apt-get install unzip
 unzip gt.zip 
 ls
 
+chmod +x ./gt
+chmod +x ./runtests.gd
 ./gt -s ./runtests.gd
