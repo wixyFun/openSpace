@@ -31,14 +31,14 @@ sudo apt-get install libfreetype6-dev
 sudo apt-get install libssl-dev libudev-dev 
 sudo apt-get install libxi-dev libxrandr-dev
 
-unzip Godot_linux.zip
-ls
+tar xvf Godot_linux.zip
+
 
 #"./Godot_v3.0.6-stable_win64.exe" --path "./" -d -s --path  "./runtests.gd" 
 
 echo "inside-------------------------"
 cd Godot_linux
-ls
+ls -a
 #cd ..
 
 #chmod +x gt
