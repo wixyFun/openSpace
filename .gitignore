@@ -22,3 +22,6 @@ bin/osx
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+#.64 zip
+Godot_v3.0.6-stable_linux_headless.64.zip
