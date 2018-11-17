@@ -1,7 +1,9 @@
 language: cpp
 compiler: gcc
 
-script: ./test.sh
+sudo: true
+
+script: chmod +x ./test.sh
   
 
  
