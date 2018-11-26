@@ -8,6 +8,7 @@ script:
 - chmod +x ./test.sh
 - ./test.sh
 - pushd tests
+- chmod +x ./test.sh
 - ./test.sh
 - popd
 - scons platform=linux
