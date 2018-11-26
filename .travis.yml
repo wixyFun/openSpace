@@ -5,8 +5,12 @@ dist: trusty
 
 
 script: 
-- sudo chmod a+rwx ./test.sh
+- chmod +x ./test.sh
 - ./test.sh
+- pushd tests
+- ./test.sh
+- popd
+- scons platform=linux
   
 
  
