@@ -11,8 +11,3 @@ script:
 - chmod +x ./test.sh
 - ./test.sh
 - popd
-- scons platform=linux generate_bindings=yes
-  
-
- 
-
