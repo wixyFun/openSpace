@@ -1,2 +1,0 @@
-The outputs of the travis run of the testing script
-each log is appended after the previouse one

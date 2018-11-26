@@ -1,8 +1,13 @@
 language: cpp
+dist: trusty
 
-os: windows
+
+
+
+script: 
+- sudo chmod a+rwx ./test.sh
+- ./test.sh
   
-after-success: 
- - ./test.sh
+
  
 
