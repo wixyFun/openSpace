@@ -157,7 +157,7 @@ class NBodySimulator
     std::pair<NBodyCoordinate, NBodyMomentum> _system;
 };
 
-inline bool massIsValid(double m) { return !isnan(m) && isfinite(m) && m > 0.0; }
+inline bool massIsValid(double m) { return !std::isnan(m) && std::isfinite(m) && m > 0.0; }
 
 inline bool velocityIsValid(const Eigen::Vector3d& v) { return !v.hasNaN() && v.allFinite();}
 
