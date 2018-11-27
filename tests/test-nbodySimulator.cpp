@@ -1,19 +1,12 @@
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
+#define DOCTEST_CONFIG_IMPLEMENT_WITH_MAIN
+#include "doctest.h"
 
 #include "NBPhysics.hpp"
 #include <Eigen/Core>
 #include <limits>
 typedef Eigen::Vector3d V;
 
-bool almost_equal(const Eigen::Vector3d& v1, const Eigen::Vector3d& v2,
-    double eps = 1e-10) {
-        return Approx(v1(0)) == v2(0)
-        && Approx(v1(1)) == v2(1)
-        && Approx(v1(2)) == v2(2);
-    }
-
-TEST_CASE("Numerical test", "[NBPhysics]") {
+TEST_CASE("Numerical test  [NBPhysics]") {
     NBodySimulator sim(2.95912208286e-4);
     // Sun
     sim.addPoint(Eigen::Vector3d(0.0, 0.0, 0.0),
@@ -45,7 +38,7 @@ TEST_CASE("Numerical test", "[NBPhysics]") {
     qref.push_back(Eigen::Vector3d(9.0755314, -3.0458353, -1.6483708));
     qref.push_back(Eigen::Vector3d(8.3101420, -16.2901086, -7.2521278));
     qref.push_back(Eigen::Vector3d(-15.5387357, -25.2225594, -3.1902382));
-    REQUIRE(qs == qref);
+    CHECK(qs == qref);
 
     qref.clear();
     qref.push_back(Eigen::Vector3d(-2.5381705249737434e-005,-3.6888595453054651e-005,-1.5252117911871189e-005));
@@ -56,11 +49,10 @@ TEST_CASE("Numerical test", "[NBPhysics]") {
     sim.do_step(0, dt);
 
     std::cout.precision(std::numeric_limits< double >::max_digits10);
-    std::cout << qs[0] << std::endl;
 
-    REQUIRE(qref[0] == qs[0]);
-    REQUIRE(qref[1] == qs[1]);
-    REQUIRE(qref[2] == qs[2]);
-    REQUIRE(qref[3] == qs[3]);
-    REQUIRE(qref[4] == qs[4]);
+    CHECK(qref[0] == qs[0]);
+    CHECK(qref[1] == qs[1]);
+    CHECK(qref[2] == qs[2]);
+    CHECK(qref[3] == qs[3]);
+    CHECK(qref[4] == qs[4]);
 }
