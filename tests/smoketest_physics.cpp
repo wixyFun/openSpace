@@ -8,6 +8,7 @@
 #include <boost/numeric/odeint.hpp>
 #include <Eigen/Eigen>
 #include <iostream>
+#include <limits>
 
 using namespace boost::numeric::odeint;
 
@@ -39,9 +40,11 @@ int main()
     const VectorXs &qs = sim.getQs();
 
     std::cout << "x0,y0,z0,x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4" << std::endl;
+    std::cout.precision(std::numeric_limits< double >::max_digits10);
     for (int i = 0; i < qs.size(); ++i)
     {
-        std::cout << qs[i](0) << "," << qs[i](1) << "," << qs[i](2);
+        std::cout
+            << qs[i](0) << "," << qs[i](1) << "," << qs[i](2);
         if (i != qs.size() - 1)
             std::cout << ",";
     }
@@ -51,7 +54,8 @@ int main()
         sim.do_step(t, dt);
         for (int i = 0; i < qs.size(); ++i)
         {
-            std::cout << qs[i](0) << "," << qs[i](1) << "," << qs[i](2);
+            std::cout 
+                << qs[i](0) << "," << qs[i](1) << "," << qs[i](2);
             if (i != qs.size() - 1)
                 std::cout << ",";
         }

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 set -o pipefail
 
@@ -22,4 +22,4 @@ g++ -std=c++11 -ggdb ${INCDIR} -w test-nbodySimulator.cpp -o a.out
 ./a.out | tee testnbodySimulator.log || exit 1
 echo "Simulator test passes"
 
-rm -f a.out smoketest.log testinput.log testnbodySimulator.log
+#rm -f a.out smoketest.log testinput.log testnbodySimulator.log
