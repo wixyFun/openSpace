@@ -27,3 +27,6 @@ bin/osx
 Godot_v3.0.6-stable_linux_headless.64.zip
 a.out
 *.log
+*.gcov
+*.gcda
+*.gcno
