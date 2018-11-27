@@ -8,8 +8,9 @@ typedef Eigen::Vector3d V;
 
 bool almost_equal(const Eigen::Vector3d& v1, const Eigen::Vector3d& v2,
     double eps = 1e-10) {
-        auto dv = v1 - v2;
-        return dv(0) < eps && dv(1) < eps && dv(2) < eps;
+        return Approx(v1(0)) == v2(0)
+        && Approx(v1(1)) == v2(1)
+        && Approx(v1(2)) == v2(2);
     }
 
 TEST_CASE("Numerical test", "[NBPhysics]") {
