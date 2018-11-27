@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "variant": "cpp"
+        "variant": "cpp",
+        "vector": "cpp"
     },
     "python.linting.pylintEnabled": false
 }

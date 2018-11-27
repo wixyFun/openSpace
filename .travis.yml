@@ -1,13 +1,13 @@
 language: cpp
-dist: trusty
+dist: xenial
 
 
 
 
 script: 
-- sudo chmod a+rwx ./test.sh
+- chmod +x ./test.sh
 - ./test.sh
-  
-
- 
-
+- pushd tests
+- chmod +x ./test.sh
+- ./test.sh
+- popd
