@@ -17,4 +17,9 @@ g++ -std=c++11 -ggdb ${INCDIR} -w smoketest_physics.cpp -o a.out
 ./a.out > smoketest.log || exit 1
 echo "Smoke test passes"
 
-rm -f a.out smoketest.log testinput.log
+echo "Simulator test..."
+g++ -std=c++11 -ggdb ${INCDIR} -w test-nbodySimulator.cpp -o a.out
+./a.out | tee testnbodySimulator.log || exit 1
+echo "Simulator test passes"
+
+rm -f a.out smoketest.log testinput.log testnbodySimulator.log
