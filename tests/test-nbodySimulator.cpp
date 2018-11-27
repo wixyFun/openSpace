@@ -52,7 +52,9 @@ TEST_CASE("Numerical test", "[NBPhysics]") {
     qref.push_back(Eigen::Vector3d(8.6626807384609492,-16.149847603128382,-7.1956920749159661));   
     qref.push_back(Eigen::Vector3d(-15.261145670710635,-25.391845888777812,-3.3265611552430148));
     sim.do_step(0, dt);
-    for (int i=0; i<qref.size(); ++i) {
-        REQUIRE(almost_equal(qref[i], qs[i]));
-    }
+    REQUIRE(almost_equal(qref[0], qs[0]));
+    REQUIRE(almost_equal(qref[1], qs[1]));
+    REQUIRE(almost_equal(qref[2], qs[2]));
+    REQUIRE(almost_equal(qref[3], qs[3]));
+    REQUIRE(almost_equal(qref[4], qs[4]));
 }
