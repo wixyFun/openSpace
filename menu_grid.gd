@@ -1,20 +1,26 @@
+"""
+class menu_grid is responsble for the visual elements of the 
+start menu, main menu and ingame widget
+"""
+#TODO add the design and the automated screen stretch 
+
 extends GridContainer
 
 # class member variables go here, for example:
 var grid_theme = Theme.new()
-var button_template = preload("Main_button.gd")
-var new_game_button
-var prev_game_button
-var exit_button
-var play_button
-var add_button
+
+var controls_dict = Global.controls_dict #all the control buttons 
+var right_grid
+var left_grid
+var center_helper
 
 
 func _ready():
 	
 	self.columns = 1
 	self.set_theme(grid_theme)
-	grid_theme.set_constant("vseparation", "GridContainer", 50)
+	
+	
 	
 	pass
 
@@ -25,71 +31,143 @@ func _ready():
 	
 func get_start_ready():
 	
-	new_game_button = button_template.new()
-	new_game_button.text = "Play New Game"
-	
-	
-	prev_game_button = button_template.new()
-	prev_game_button.text = "Load Previous Game"
-	
-	
-	exit_button = button_template.new()
-	exit_button.text = "Exit Game"
-	
-	self.add_child(new_game_button)
-	self.add_child(prev_game_button)
-	self.add_child(exit_button)
+	grid_theme.set_constant("vseparation", "GridContainer", 50)
+	self.add_to_grid(["new_game", "prev_game", "exit"])
 	
 	pass
-	
-func set_start_controls():
-	
-	exit_button.connect("pressed", self, "exit_pressed")
-	new_game_button.connect("pressed", self, "set_new_game")
-	
-	pass
-	
-func exit_pressed():
-	
-	self.get_tree().quit()
-	
-	pass
-	
-func set_new_game():
-	
-	self.remove_from_grid([exit_button,prev_game_button,new_game_button])
-	
-	self.get_main_ready()
-	
-	pass
-	
+		
 func remove_from_grid(list):
 	
 	for child in list:
-		self.remove_child(child)
+		self.remove_child(controls_dict[child])
 	
 	pass
 	
+func add_to_grid(b_list):
+	
+	for item in b_list:
+		self.add_child(controls_dict[item])
+		
+	pass 
+	
+#TODO split into several methods
 func get_main_ready():
 	
+	grid_theme.set_constant("vseparation", "GridContainer", 20)
+	grid_theme.set_constant("hseparation", "GridContainer", 30)
+	
 	self.columns = 2
+	left_grid = GridContainer.new()
+	right_grid = GridContainer.new()
+	center_helper = CenterContainer.new()
 	
-	play_button = button_template.new()
-	play_button.text = "Play"
+	left_grid.columns = 2
+	right_grid.columns = 1
+			
+	#set_process(true)
 	
-	add_button = button_template.new()
-	add_button.text = "Play New Game"
+	self.add_to_leftGrid(Global.data_len) 
+	self.add_to_rightGrid(["play","add", "exit"])
 	
-	exit_button = button_template.new()
-	exit_button.text = "Play New Game"
+	self.add_child(left_grid)
+	center_helper.add_child(right_grid)
+	self.add_child(center_helper)
 	
+	pass
 	
-	
-	
-	
-	
-	
-	
-	
+func add_to_leftGrid(value):
 
+	for i in range (value):
+		
+		left_grid.add_child(controls_dict[i][0])
+		left_grid.add_child(controls_dict[i][1])
+		
+	pass
+
+func add_to_rightGrid(listed):
+	
+	for item in listed:
+		right_grid.add_child(controls_dict[item])
+	
+	pass
+	
+func get_inGame_widget():
+	
+	self.set_columns(2)
+	"""
+	controls_dict["popUp"] = MenuButton.new()
+	
+	controls_dict["add"] = button_template.new()
+	controls_dict["add"].add_child(controls_dict["popUp"])
+	controls_dict["add"].text = "Add Planet"
+	#popUp.set_size(Vector2(80,20))
+	controls_dict["add"].set_position(Vector2(20,20))
+	
+	
+	
+	controls_dict["save"] = button_template.new()
+	controls_dict["save"].text = "Save Game"
+	controls_dict["save"].set_position(Vector2(190,20))
+	
+	
+	
+	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"
+	controls_dict["exit"].set_position(Vector2(370,20))
+	
+	#self.add_to_grid(["add", "save"])
+	"""
+	
+	pass
+	
+"""	
+func planets_data_widget():
+	
+	
+	left_grid = GridContainer.new()
+	right_grid = GridContainer.new()
+	center_helper = CenterContainer.new()
+	
+	var grid_theme_temp = Theme.new()
+	left_grid.set_theme(grid_theme_temp)
+	
+	grid_theme_temp.set_constant("vseparation", "GridContainer", 5)
+	grid_theme_temp.set_constant("hseparation", "GridContainer", 5)
+	left_grid.columns = 2
+	right_grid.columns = 1
+	
+	controls_dict["addPopUp"] = button_template.new()
+	controls_dict["addPopUp"].text = "Add "
+	
+	for index in range(7):
+		
+		controls_dict[index] = [Label.new(), LineEdit.new()]
+	
+	var labels_text = ["Enter Mass", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
+	
+	for i in range (labels_text.size()):
+		controls_dict[i][0].text = labels_text[i]
+		controls_dict[i][1].editable = true
+		controls_dict[i][1].expand_to_text_length = true
+		controls_dict[i][1].max_length = 5
+		
+	self.add_to_leftGrid(labels_text.size()) 
+	self.add_to_rightGrid(["addPopUp"])
+	
+	self.add_child(left_grid)
+	center_helper.add_child(right_grid)
+	self.add_child(center_helper)
+	
+		
+	pass
+"""
+	
+func _process(delta):
+	
+	#set_size(Vector2 (100, 50))
+	#if !text_array.empty() :
+		#text_array[0].set_size(Vector2(300, 300))
+		#text_array[0].set_scale (Vector2(1.5, 1.5))
+	
 	pass

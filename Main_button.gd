@@ -1,3 +1,9 @@
+"""
+class for uniform design of the buttons in the game
+TODO: set the theme and the size, methods for updating/setting those
+"""
+
+
 extends Button
 
 # class member variables go here, for example:
