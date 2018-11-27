@@ -16,8 +16,13 @@ echo "Simulator test..."
 #g++ -std=c++11 -Wa,-mbig-obj -O0 -ggdb ${INCDIR} -w test-nbodySimulator.cpp -o a.out
 g++ -std=c++11 -O0 -ggdb ${INCDIR} -g -fprofile-arcs -ftest-coverage -w test-nbodySimulator.cpp -o a.out
 ./a.out | tee testnbodySimulator.log || exit 1
-gcov test-nbodySimulator -m
 echo "Simulator test passes"
+
+echo "Generating coverage report..."
+gcov test-nbodySimulator -m
+echo "=============================="
+cat NBPhysics.hpp.gcov
+echo "Coverage report done"
 
 
 #rm -f a.out smoketest.log testinput.log testnbodySimulator.log
