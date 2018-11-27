@@ -3,7 +3,7 @@
 
 #include "NBPhysics.hpp"
 #include <Eigen/Core>
-
+#include <limits>
 typedef Eigen::Vector3d V;
 
 bool almost_equal(const Eigen::Vector3d& v1, const Eigen::Vector3d& v2,
@@ -47,15 +47,20 @@ TEST_CASE("Numerical test", "[NBPhysics]") {
     qref.push_back(Eigen::Vector3d(-15.5387357, -25.2225594, -3.1902382));
     REQUIRE(qs == qref);
 
+    qref.clear();
     qref.push_back(Eigen::Vector3d(-2.5381705249737434e-005,-3.6888595453054651e-005,-1.5252117911871189e-005));
     qref.push_back(Eigen::Vector3d(-2.9058545717814241,-4.1923795641490118,-1.726241987842063));
     qref.push_back(Eigen::Vector3d(9.2290625935508892,-2.5576435413849277,-1.4533453789682504));
     qref.push_back(Eigen::Vector3d(8.6626807384609492,-16.149847603128382,-7.1956920749159661));   
     qref.push_back(Eigen::Vector3d(-15.261145670710635,-25.391845888777812,-3.3265611552430148));
     sim.do_step(0, dt);
-    REQUIRE(almost_equal(qref[0], qs[0]));
-    REQUIRE(almost_equal(qref[1], qs[1]));
-    REQUIRE(almost_equal(qref[2], qs[2]));
-    REQUIRE(almost_equal(qref[3], qs[3]));
-    REQUIRE(almost_equal(qref[4], qs[4]));
+
+    std::cout.precision(std::numeric_limits< double >::max_digits10);
+    std::cout << qs[0] << std::endl;
+
+    REQUIRE(qref[0] == qs[0]);
+    REQUIRE(qref[1] == qs[1]);
+    REQUIRE(qref[2] == qs[2]);
+    REQUIRE(qref[3] == qs[3]);
+    REQUIRE(qref[4] == qs[4]);
 }
