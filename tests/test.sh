@@ -18,7 +18,8 @@ g++ -std=c++11 -ggdb ${INCDIR} -w smoketest_physics.cpp -o a.out
 echo "Smoke test passes"
 
 echo "Simulator test..."
-g++ -std=c++11 -Wa,-mbig-obj -O0 -ggdb ${INCDIR} -w test-nbodySimulator.cpp -o a.out
+#g++ -std=c++11 -Wa,-mbig-obj -O0 -ggdb ${INCDIR} -w test-nbodySimulator.cpp -o a.out
+g++ -std=c++11 -O0 -ggdb ${INCDIR} -w test-nbodySimulator.cpp -o a.out
 ./a.out | tee testnbodySimulator.log || exit 1
 echo "Simulator test passes"
 
