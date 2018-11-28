@@ -20,8 +20,6 @@ func _ready():
 	self.columns = 1
 	self.set_theme(grid_theme)
 	
-	
-	
 	pass
 
 #func _process(delta):
@@ -29,17 +27,26 @@ func _ready():
 #	# Update game logic here.
 #	pass
 	
-func get_start_ready():
+func get_start_ready(all):
+	
+	Global.get_startButtons_ready(all)
+	self.name = "start"
 	
 	grid_theme.set_constant("vseparation", "GridContainer", 50)
-	self.add_to_grid(["new_game", "prev_game", "exit"])
+	
+	#if there are saved games
+	if all:
+		self.add_to_grid(["prev_game"])
+	#if there are no saved games
+	self.add_to_grid(["new_game","exit"])
 	
 	pass
 		
 func remove_from_grid(list):
 	
 	for child in list:
-		self.remove_child(controls_dict[child])
+		if controls_dict.has(child):
+			self.remove_child(controls_dict[child])
 	
 	pass
 	
@@ -52,6 +59,10 @@ func add_to_grid(b_list):
 	
 #TODO split into several methods
 func get_main_ready():
+	
+	Global.get_mainControls_ready()
+	
+	self.name = "main"
 	
 	grid_theme.set_constant("vseparation", "GridContainer", 20)
 	grid_theme.set_constant("hseparation", "GridContainer", 30)
