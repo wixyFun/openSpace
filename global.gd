@@ -8,8 +8,8 @@ will be globally available in the game
 
 # class member variables go here
 var current_scene 
-var start_screen = 'res://main_menu_scene.tscn'
-var end_screen
+#var start_screen = 'res://main_menu_scene.tscn'
+#var end_screen
 
 #the number of the parameters for the planet's data
 var data_len = 7
@@ -28,8 +28,9 @@ func _ready():
 	# Called when the node is added to the scene for the first time.
 	# set the start sceen
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
-	self.get_buttons_ready()
-	self.get_labels_ready()
+	
+	#print(controls_dict.size())
+	#print(current_scene.filename)
 	pass
 
 func game_over():
@@ -44,7 +45,8 @@ func set_scene(scene):
 	   #clean up the current scene
 	   current_scene.queue_free()
 	
-	current_scene = ResourceLoader.load(scene).instance()
+	var scene_res = ResourceLoader.load(scene)
+	current_scene= scene_res.instance()
 	get_tree().get_root().add_child(current_scene)
 	
 	pass
@@ -67,28 +69,27 @@ func save_data():
 	
 	pass
 	
-func get_buttons_ready():
+func get_startButtons_ready(all):
 	
 	controls_dict["new_game"] = button_template.new()
 	controls_dict["new_game"].text = "Play New Game"
 	
-	controls_dict["prev_game"] = button_template.new()
-	controls_dict["prev_game"].text = "Load Previous Games"
-	
-	
 	controls_dict["exit"] = button_template.new()
 	controls_dict["exit"].text = "Exit Game"	
+	
+	if all:
+		controls_dict["prev_game"] = button_template.new()
+		controls_dict["prev_game"].text = "Load Previous Games"
+		
+	pass
+		
+func get_mainControls_ready():
 	
 	controls_dict["play"] = button_template.new()
 	controls_dict["play"].text = "Play"
 	
 	controls_dict["add"] = button_template.new()
 	controls_dict["add"].text = "Add Planet"
-	
-	pass
-	
-	
-func get_labels_ready():
 	
 	var labels_text = ["Enter Mass", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
 	
@@ -97,8 +98,6 @@ func get_labels_ready():
 	for i in range(index):
 		
 		controls_dict[i] = [Label.new(), LineEdit.new()]
-	
-	
 	
 	for i in range (index):
 		controls_dict[i][0].text = labels_text[i]
@@ -109,12 +108,21 @@ func get_labels_ready():
 	
 	pass
 	
+#TODO will check if there are games in db	
+func has_saved_games():
+	
+	return false
 	
 func exit_game():
 	
+	print("deleted from global")
 	if current_scene != null :
 	   #clean up the current scene
-	   current_scene.queue_free()
+		for i in range(0,current_scene.get_child_count()):
+			print(current_scene.get_child(i))
+			current_scene.get_child(i).queue_free()
+	current_scene.queue_free()
+	
 	
 	
 
