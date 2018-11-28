@@ -27,7 +27,7 @@ sudo chmod -R a+rwx   ./
 
 
 ./Godot_v3.0.6-stable_linux_headless.64 --path ./project.godot -d -s ./runtests.gd
-./Godot_v3.0.6-stable_linux_headless.64 --path ./project.godot -d -s ./tests/menu/runtests.gd
+#./Godot_v3.0.6-stable_linux_headless.64 --path ./project.godot -d -s ./tests/menu/runtests.gd
 
 
 
