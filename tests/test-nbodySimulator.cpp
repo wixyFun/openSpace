@@ -31,6 +31,18 @@ TEST_CASE("Velocity validation test [velocityIsValid]") {
     CHECK(velocityIsValid(V(-INFINITY, 0, 0)) == false);
     CHECK(velocityIsValid(V(0, -INFINITY, 0)) == false);
     CHECK(velocityIsValid(V(0, 0, -INFINITY)) == false);
+    CHECK(velocityIsValid(V(DBL_EPSILON, 0, 0)) == true);
+    CHECK(velocityIsValid(V(0, DBL_EPSILON, 0)) == true);
+    CHECK(velocityIsValid(V(0, 0, DBL_EPSILON)) == true);
+    CHECK(velocityIsValid(V(-DBL_EPSILON, 0, 0)) == true);
+    CHECK(velocityIsValid(V(0, -DBL_EPSILON, 0)) == true);
+    CHECK(velocityIsValid(V(0, 0, -DBL_EPSILON)) == true);
+    CHECK(velocityIsValid(V(DBL_MAX, 0, 0)) == true);
+    CHECK(velocityIsValid(V(0, DBL_MAX, 0)) == true);
+    CHECK(velocityIsValid(V(0, 0, DBL_MAX)) == true);
+    CHECK(velocityIsValid(V(-DBL_MAX, 0, 0)) == true);
+    CHECK(velocityIsValid(V(0, -DBL_MAX, 0)) == true);
+    CHECK(velocityIsValid(V(0, 0, -DBL_MAX)) == true);
 }
 
 TEST_CASE("Coordinate validation test [coordinateIsValid]") {
@@ -45,6 +57,18 @@ TEST_CASE("Coordinate validation test [coordinateIsValid]") {
     CHECK(coordinateIsValid(V(-INFINITY, 0, 0)) == false);
     CHECK(coordinateIsValid(V(0, -INFINITY, 0)) == false);
     CHECK(coordinateIsValid(V(0, 0, -INFINITY)) == false);
+    CHECK(coordinateIsValid(V(DBL_EPSILON, 0, 0)) == true);
+    CHECK(coordinateIsValid(V(0, DBL_EPSILON, 0)) == true);
+    CHECK(coordinateIsValid(V(0, 0, DBL_EPSILON)) == true);
+    CHECK(coordinateIsValid(V(-DBL_EPSILON, 0, 0)) == true);
+    CHECK(coordinateIsValid(V(0, -DBL_EPSILON, 0)) == true);
+    CHECK(coordinateIsValid(V(0, 0, -DBL_EPSILON)) == true);
+    CHECK(coordinateIsValid(V(DBL_MAX, 0, 0)) == true);
+    CHECK(coordinateIsValid(V(0, DBL_MAX, 0)) == true);
+    CHECK(coordinateIsValid(V(0, 0, DBL_MAX)) == true);
+    CHECK(coordinateIsValid(V(-DBL_MAX, 0, 0)) == true);
+    CHECK(coordinateIsValid(V(0, -DBL_MAX, 0)) == true);
+    CHECK(coordinateIsValid(V(0, 0, -DBL_MAX)) == true);
 }
 
 TEST_CASE("Numerical test  [NBPhysics]") {
