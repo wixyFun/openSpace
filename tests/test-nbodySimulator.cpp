@@ -34,15 +34,15 @@ TEST_CASE("Velocity validation test [velocityIsValid]") {
     CHECK(velocityIsValid(V(DBL_EPSILON, 0, 0)) == true);
     CHECK(velocityIsValid(V(0, DBL_EPSILON, 0)) == true);
     CHECK(velocityIsValid(V(0, 0, DBL_EPSILON)) == true);
-    CHECK(velocityIsValid(V(-DBL_EPSILON, 0, 0)) == false);
-    CHECK(velocityIsValid(V(0, -DBL_EPSILON, 0)) == false);
-    CHECK(velocityIsValid(V(0, 0, -DBL_EPSILON)) == false);
+    CHECK(velocityIsValid(V(-DBL_EPSILON, 0, 0)) == true);
+    CHECK(velocityIsValid(V(0, -DBL_EPSILON, 0)) == true);
+    CHECK(velocityIsValid(V(0, 0, -DBL_EPSILON)) == true);
     CHECK(velocityIsValid(V(DBL_MAX, 0, 0)) == true);
     CHECK(velocityIsValid(V(0, DBL_MAX, 0)) == true);
     CHECK(velocityIsValid(V(0, 0, DBL_MAX)) == true);
-    CHECK(velocityIsValid(V(-DBL_MAX, 0, 0)) == false);
-    CHECK(velocityIsValid(V(0, -DBL_MAX, 0)) == false);
-    CHECK(velocityIsValid(V(0, 0, -DBL_MAX)) == false);
+    CHECK(velocityIsValid(V(-DBL_MAX, 0, 0)) == true);
+    CHECK(velocityIsValid(V(0, -DBL_MAX, 0)) == true);
+    CHECK(velocityIsValid(V(0, 0, -DBL_MAX)) == true);
 }
 
 TEST_CASE("Coordinate validation test [coordinateIsValid]") {
