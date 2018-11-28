@@ -2,15 +2,14 @@
 testing menu_grid
 """
 
-extends "res://unittest.gd"
+extends "res://tests/menu/unittest.gd"
 
 func tests():
 	
 	testcase("testing menu_grid.gd")
     #print("testing the sample test")
-	var grid = preload("res://menu_grid.gd").new()
-	
-	
+	var Grid = load('res://menu_grid.gd')
+	var grid = Grid.new()
 	
 	assert_true(grid != null, "should be true")
 	#assert_false(global.controls_dict == null, "false")
