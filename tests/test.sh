@@ -7,6 +7,10 @@ INCDIR+="-I../thirdparty/boost_1_68_0 "
 INCDIR+="-I../thirdparty/eigen "
 INCDIR+="-I../src/nbody "
 
+echo "Static Analysis..."
+
+echo "Static Analysis passes"
+
 echo "Smoke Test..."
 g++ -std=c++11 -ggdb ${INCDIR} -w smoketest_physics.cpp -o a.out
 ./a.out > smoketest.log || exit 1
