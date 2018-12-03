@@ -2,8 +2,9 @@
 
 sudo apt-get update 
 
-sudo apt-get install build-essential 
-sudo apt-get install scons 
+sudo apt-get install -y build-essential 
+sudo apt-get install -y scons 
+sudo apt-get install -y cppcheck
 #sudo apt-get install pkg-config 
 #sudo apt-get install libx11-dev 
 #sudo apt-get install libxcursor-dev 
