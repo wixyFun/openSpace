@@ -15,6 +15,8 @@ var start_screen = 'res://Start_scene.tscn'
 var data_len = 7
 var SQLite = preload("res://db.gd")
 var db = SQLite.new()
+var table_name
+var projects_saved = []
 
 #dictionary to keep the data for the planets
 #number of the planet as a key and values are in the array of floats
@@ -104,6 +106,14 @@ func get_mainControls_ready():
 	
 #TODO will check if there are games in db	
 func has_saved_games():
+
+	if db.prepare_db():
+		db.fetch_allTables();
+		
+		db.close_db();
+		if !projects_saved.empty():
+			print(projects_saved)
+			return true
 	
 	return false
 	
@@ -116,8 +126,6 @@ func has_duplicates(temp_data):
 	return false
 	
 func save_data():
-	
-	var table_name
 	
 	if db.prepare_db():
 		table_name = "'" + db.get_TName()+ "'";
@@ -141,6 +149,36 @@ func exit_game():
 	db.queue_free()
 	pass
 	
+func get_loadPrev_buttons():
+	
+	for i in range(projects_saved.size()):
+		var name = projects_saved[i]
+		controls_dict[name] = button_template.new()
+		controls_dict[name].text = name
+		
+	pass
+	
+func load_fromTable(table):
+	
+	var result
+	
+	if db.prepare_db():
+		var statement = "SELECT * FROM %s";
+		var query = statement % table
+		result = db.db.fetch_array(query);
+		
+		for i in range(result.size()):
+			Global.planets_data[result[i].id] = [result[i].Mass, result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz];
+			print(Global.planets_data[result[i].id])
+		
+		
+		print("all the data from the table")
+		print(result)
+		
+		db.close_db();
+		return true
+	
+	return false
 
 	
 	

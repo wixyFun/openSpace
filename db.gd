@@ -99,6 +99,17 @@ func getTimeStamp():
 	print(stamp)
 	return stamp
 	
+func fetch_allTables():
+	
+	var query = "SELECT name FROM sqlite_master WHERE type='table'";
+	var result = db.fetch_array(query);
+	
+	for i in range(result.size()):
+		var name = str(result[i].name)
+		Global.projects_saved.append(name);
+
+	pass
+	
 #func _process(delta):
 #	# Called every frame. Delta is time since last frame.
 #	# Update game logic here.
