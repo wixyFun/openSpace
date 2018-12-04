@@ -17,10 +17,13 @@ var message_label = Label.new()
 func _ready():
 	
 	self.get_message_ready()
+	self.get_container_ready()
 	
 	message_box.add_child(message_label)
 	self.add_child(message_box)
-	self.get_start_menu_ready()
+	grid.get_main_ready()
+	self.set_main_controls()
+	message_label.text = "Please Enter Numeric Values"
 	
 	center_container.add_child(grid)
 	self.add_child(center_container)
@@ -51,7 +54,7 @@ func get_container_ready():
 	
 	
 	pass
-
+"""
 #the 1st menu screen with 2/3 buttons		
 func get_start_menu_ready():
 	
@@ -67,7 +70,8 @@ func get_start_menu_ready():
 		self.set_start_controls(false)
 		
 	pass
-	
+"""
+"""
 func set_start_controls(all):
 	
 	grid.controls_dict["exit"].connect("pressed", self, "exit_pressed")
@@ -77,11 +81,14 @@ func set_start_controls(all):
 		grid.controls_dict["prev_game"].connect("pressed", self, "prevGame_pressed")
 		
 	pass
+"""
 	
 func set_main_controls():
 	
 	grid.controls_dict["play"].connect("pressed", self, "play_pressed")
 	grid.controls_dict["add"].connect("pressed", self, "add_pressed")
+	grid.controls_dict["save"].connect("pressed", self, "save_pressed")
+	grid.controls_dict["exit"].connect("pressed", self, "exit_pressed")
 	
 	grid.controls_dict[0][1].connect("text_changed", self, "validate_mass")
 	grid.controls_dict[1][1].connect("text_changed", self, "validate_x")
@@ -91,47 +98,45 @@ func set_main_controls():
 	grid.controls_dict[5][1].connect("text_changed", self, "validate_Vy")
 	grid.controls_dict[6][1].connect("text_changed", self, "validate_Vz")
 	
-		
-	
 	pass
 	
 func validate_mass(new_text):
 	
-	self.validate(new_text,str(grid.controls_dict[0][0].text))
+	self.validate_logic(new_text,str(grid.controls_dict[0][0].text))
 	
 	pass
 	
 func validate_x(new_text):
 	
-	self.validate(new_text,str(grid.controls_dict[1][0].text))
+	self.validate_logic(new_text,str(grid.controls_dict[1][0].text))
 	pass
 	
 func validate_y(new_text):
 	
-	self.validate(new_text,str(grid.controls_dict[2][0].text))
+	self.validate_logic(new_text,str(grid.controls_dict[2][0].text))
 	pass
 	
 func validate_Vx(new_text):
 	
-	self.validate( new_text,str(grid.controls_dict[4][0].text))
+	self.validate_logic( new_text,str(grid.controls_dict[4][0].text))
 	pass
 	
 func validate_Vy(new_text):
 	
-	self.validate(new_text,str(grid.controls_dict[5][0].text))
+	self.validate_logic(new_text,str(grid.controls_dict[5][0].text))
 	pass
 	
 func validate_Vz(new_text):
 	
-	self.validate(new_text,str(grid.controls_dict[6][0].text))
+	self.validate_logic(new_text,str(grid.controls_dict[6][0].text))
 	pass
 	
 func validate_z(new_text):
 	
-	self.validate(new_text,str(grid.controls_dict[3][0].text))
+	self.validate_logic(new_text,str(grid.controls_dict[3][0].text))
 	pass
 	
-func validate(value, label):
+func validate_logic(value, label):
 	
 	#not an integer or a float checked
 	if !(value.is_valid_float()):
@@ -172,7 +177,7 @@ func add_pressed():
 	for i in range(7):
 		temp = grid.controls_dict[i][1].text
 		
-		if !self.validate(temp, str(grid.controls_dict[i][0].text)): 
+		if !self.validate_logic(temp, str(grid.controls_dict[i][0].text)): 
 			change = false
 		
 	if !change:
@@ -195,6 +200,7 @@ func update_message(prompt, colored):
 	message_label.update()
 	pass
 
+"""
 #after the new game nutton pressed	
 func set_data_collection():
 	
@@ -202,6 +208,19 @@ func set_data_collection():
 	grid.get_main_ready()
 	self.set_main_controls()
 	message_label.text = "Please Enter Numeric Values"
+	
+	pass
+"""
+	
+func save_pressed():
+	
+	if Global.planets_data.empty():
+		self.update_message("Please Add Planet Before Saving!", Color(1,0,0));
+	else:
+		if Global.save_data():
+			self.update_message("The Data Was Saved.", Color(1,1,1));
+		else:
+			self.update_message("Could not Save Data!", Color(1,0,0));
 	
 	pass
 	
@@ -215,23 +234,7 @@ func exit_pressed():
 	message_label.queue_free()	
 	grid.queue_free()		
 	
-	match grid.name:
-		"start":
-			#f
-			print("start")
-			
-			continue
-		"main":
-			print("main")
-			Global.controls_dict["new_game"].queue_free()
-			if Global.controls_dict.has("prev_game"):
-				Global.controls_dict["prev_game"].queue_free()
-				
-	
-			continue
 		
-	
-			
 	Global.exit_game()
 	self.get_tree().quit()
 	pass

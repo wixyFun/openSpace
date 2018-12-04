@@ -17,9 +17,7 @@ var center_helper
 
 func _ready():
 	
-	self.columns = 1
 	self.set_theme(grid_theme)
-	
 	pass
 
 #func _process(delta):
@@ -29,6 +27,7 @@ func _ready():
 	
 func get_start_ready(all):
 	
+	self.columns = 1
 	Global.get_startButtons_ready(all)
 	self.name = "start"
 	
@@ -78,7 +77,7 @@ func get_main_ready():
 	#set_process(true)
 	
 	self.add_to_leftGrid(Global.data_len) 
-	self.add_to_rightGrid(["play","add", "exit"])
+	self.add_to_rightGrid(["play","add", "save" ,"exit"])
 	
 	self.add_child(left_grid)
 	center_helper.add_child(right_grid)

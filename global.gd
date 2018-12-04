@@ -8,12 +8,13 @@ will be globally available in the game
 
 # class member variables go here
 var current_scene 
-#var start_screen = 'res://main_menu_scene.tscn'
+var start_screen = 'res://Start_scene.tscn'
 #var end_screen
 
 #the number of the parameters for the planet's data
 var data_len = 7
-#var SQLite = preload("res://sqlite_db.gd")
+var SQLite = preload("res://db.gd")
+var db = SQLite.new()
 
 #dictionary to keep the data for the planets
 #number of the planet as a key and values are in the array of floats
@@ -25,7 +26,7 @@ var button_template = preload("res://Main_button.gd")
 
 
 func _ready():
-	# Called when the node is added to the scene for the first time.
+	
 	# set the start sceen
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
 	
@@ -50,23 +51,10 @@ func set_scene(scene):
 	get_tree().get_root().add_child(current_scene)
 	
 	pass
-	
-		
-		
+			
 func update_data(key, index, value):
 	
 	planets_data[key][index] = value
-	
-
-func save_data():
-	
-	#set the db obect
-	#var db = SQLite.new()
-	print("inside the save_data")
-	#db.open()
-	
-	
-	
 	pass
 	
 func get_startButtons_ready(all):
@@ -91,6 +79,12 @@ func get_mainControls_ready():
 	controls_dict["add"] = button_template.new()
 	controls_dict["add"].text = "Add Planet"
 	
+	controls_dict["save"] = button_template.new()
+	controls_dict["save"].text = "Save"
+	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"	
+	
 	var labels_text = ["Enter Mass", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
 	
 	var index = labels_text.size()
@@ -112,6 +106,20 @@ func get_mainControls_ready():
 func has_saved_games():
 	
 	return false
+	
+func save_data():
+	
+	var table_name
+	
+	if db.prepare_db():
+		table_name = "'" + db.get_TName()+ "'";
+		if db.get_tableReady(table_name):
+			if db.save_toDB(table_name):
+				return true;
+		db.close_db();
+	
+	return false
+		
 	
 func exit_game():
 	
