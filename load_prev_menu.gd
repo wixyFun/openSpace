@@ -52,6 +52,9 @@ func set_loadPrev_controls():
 		var name = Global.projects_saved[i]
 		grid.controls_dict[name].connect("pressed", self, "project_pressed", [name,]);
 		grid.add_child(grid.controls_dict[name])
+		
+	grid.add_child(Global.controls_dict["exit"])
+	grid.controls_dict["exit"].connect("pressed", self,"exit_pressed")
 	pass
 	
 func project_pressed(which):

@@ -151,6 +151,9 @@ func exit_game():
 	
 func get_loadPrev_buttons():
 	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"
+	
 	for i in range(projects_saved.size()):
 		var name = projects_saved[i]
 		controls_dict[name] = button_template.new()
@@ -180,6 +183,42 @@ func load_fromTable(table):
 	
 	return false
 
+func get_orbitControls_ready():
+	
+	controls_dict["simulate"] = button_template.new()
+	controls_dict["simulate"].text = "Simulate"
+	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"
+	
+	var temp_array = []
+	
+	for i in range(planets_data.size()):
+	
+		#TODO: planet's name instead?
+		var name = "index_"+str(i)
+		temp_array.append(name)
+		
+		controls_dict[name] = [Label.new(), OptionButton.new()];
+		controls_dict[name][0].text = name
+		
+	
+	self.fix_dropDown(temp_array)
+		
+	pass
+	
+func fix_dropDown(names_array):
+	
+	var elem_num = names_array.size()
+	
+	for label_index in range(elem_num):
+		for item_index in range(elem_num):
+			
+			if label_index != item_index:
+				controls_dict[names_array[label_index]][1].add_item(names_array[item_index], item_index)
+				controls_dict[names_array[label_index]][1].add_separator()
+		controls_dict[names_array[label_index]][1].add_item("NONE")		
+	pass
 	
 	
 	
