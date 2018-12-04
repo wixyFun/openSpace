@@ -8,12 +8,15 @@ will be globally available in the game
 
 # class member variables go here
 var current_scene 
-#var start_screen = 'res://main_menu_scene.tscn'
+var start_screen = 'res://Start_scene.tscn'
 #var end_screen
 
 #the number of the parameters for the planet's data
 var data_len = 7
-#var SQLite = preload("res://sqlite_db.gd")
+var SQLite = preload("res://db.gd")
+var db = SQLite.new()
+var table_name
+var projects_saved = []
 
 #dictionary to keep the data for the planets
 #number of the planet as a key and values are in the array of floats
@@ -25,7 +28,7 @@ var button_template = preload("res://Main_button.gd")
 
 
 func _ready():
-	# Called when the node is added to the scene for the first time.
+	
 	# set the start sceen
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
 	
@@ -50,21 +53,8 @@ func set_scene(scene):
 	get_tree().get_root().add_child(current_scene)
 	
 	pass
-	
-		
-		
-func update_data(key, index, value):
-	
-	planets_data[key][index] = value
-	
-
-func save_data():
-	
-	#set the db obect
-	#var db = SQLite.new()
-	print("inside the save_data")
-	#db.open()
-	
+			
+func update_data():
 	
 	
 	pass
@@ -91,6 +81,12 @@ func get_mainControls_ready():
 	controls_dict["add"] = button_template.new()
 	controls_dict["add"].text = "Add Planet"
 	
+	controls_dict["save"] = button_template.new()
+	controls_dict["save"].text = "Save"
+	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"	
+	
 	var labels_text = ["Enter Mass", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
 	
 	var index = labels_text.size()
@@ -110,9 +106,36 @@ func get_mainControls_ready():
 	
 #TODO will check if there are games in db	
 func has_saved_games():
+
+	if db.prepare_db():
+		db.fetch_allTables();
+		
+		db.close_db();
+		if !projects_saved.empty():
+			print(projects_saved)
+			return true
 	
 	return false
 	
+func has_duplicates(temp_data):
+	
+	for index in range(planets_data.size()):
+		if planets_data[index][1] == temp_data[1] && planets_data[index][2] == temp_data[2] && planets_data[index][3] == temp_data[3]:
+			return true
+	
+	return false
+	
+func save_data():
+	
+	if db.prepare_db():
+		table_name = "'" + db.get_TName()+ "'";
+		if db.get_tableReady(table_name):
+			if db.save_toDB(table_name):
+				return true;
+	db.close_db();
+	
+	return false
+		
 func exit_game():
 	
 	print("deleted from global")
@@ -122,6 +145,81 @@ func exit_game():
 			print(current_scene.get_child(i))
 			current_scene.get_child(i).queue_free()
 	current_scene.queue_free()
+	
+	db.queue_free()
+	pass
+	
+func get_loadPrev_buttons():
+	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"
+	
+	for i in range(projects_saved.size()):
+		var name = projects_saved[i]
+		controls_dict[name] = button_template.new()
+		controls_dict[name].text = name
+		
+	pass
+	
+func load_fromTable(table):
+	
+	var result
+	
+	if db.prepare_db():
+		var statement = "SELECT * FROM %s";
+		var query = statement % table
+		result = db.db.fetch_array(query);
+		
+		for i in range(result.size()):
+			Global.planets_data[result[i].id] = [result[i].Mass, result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz];
+			print(Global.planets_data[result[i].id])
+		
+		
+		print("all the data from the table")
+		print(result)
+		
+		db.close_db();
+		return true
+	
+	return false
+
+func get_orbitControls_ready():
+	
+	controls_dict["simulate"] = button_template.new()
+	controls_dict["simulate"].text = "Simulate"
+	
+	controls_dict["exit"] = button_template.new()
+	controls_dict["exit"].text = "Exit Game"
+	
+	var temp_array = []
+	
+	for i in range(planets_data.size()):
+	
+		#TODO: planet's name instead?
+		var name = "index_"+str(i)
+		temp_array.append(name)
+		
+		controls_dict[name] = [Label.new(), OptionButton.new()];
+		controls_dict[name][0].text = name
+		
+	
+	self.fix_dropDown(temp_array)
+		
+	pass
+	
+func fix_dropDown(names_array):
+	
+	var elem_num = names_array.size()
+	
+	for label_index in range(elem_num):
+		for item_index in range(elem_num):
+			
+			if label_index != item_index:
+				controls_dict[names_array[label_index]][1].add_item(names_array[item_index], item_index)
+				controls_dict[names_array[label_index]][1].add_separator()
+		controls_dict[names_array[label_index]][1].add_item("NONE")		
+	pass
+	
 	
 	
 	

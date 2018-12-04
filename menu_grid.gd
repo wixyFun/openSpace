@@ -17,9 +17,7 @@ var center_helper
 
 func _ready():
 	
-	self.columns = 1
 	self.set_theme(grid_theme)
-	
 	pass
 
 #func _process(delta):
@@ -29,6 +27,7 @@ func _ready():
 	
 func get_start_ready(all):
 	
+	self.columns = 1
 	Global.get_startButtons_ready(all)
 	self.name = "start"
 	
@@ -78,7 +77,7 @@ func get_main_ready():
 	#set_process(true)
 	
 	self.add_to_leftGrid(Global.data_len) 
-	self.add_to_rightGrid(["play","add", "exit"])
+	self.add_to_rightGrid(["play","add", "save" ,"exit"])
 	
 	self.add_child(left_grid)
 	center_helper.add_child(right_grid)
@@ -180,5 +179,40 @@ func _process(delta):
 	#if !text_array.empty() :
 		#text_array[0].set_size(Vector2(300, 300))
 		#text_array[0].set_scale (Vector2(1.5, 1.5))
+	
+	pass
+	
+func get_orbitMenu_grid():
+	
+	Global.get_orbitControls_ready()
+	
+	self.name = "orbitGrid"
+	
+	grid_theme.set_constant("vseparation", "GridContainer", 20)
+	grid_theme.set_constant("hseparation", "GridContainer", 30)
+	
+	self.columns = 2
+	
+
+	left_grid = GridContainer.new()
+	right_grid = GridContainer.new()
+	center_helper = CenterContainer.new()
+	
+	left_grid.columns = 2
+	right_grid.columns = 1
+			
+	#set_process(true)
+	#add to grid
+	for i in range(Global.planets_data.size()):
+		var name = "index_"+str(i)
+		left_grid.add_child(Global.controls_dict[name][0])
+		left_grid.add_child(Global.controls_dict[name][1])
+	
+	self.add_to_leftGrid(Global.data_len) 
+	self.add_to_rightGrid(["simulate","exit"])
+	
+	self.add_child(left_grid)
+	center_helper.add_child(right_grid)
+	self.add_child(center_helper)
 	
 	pass
