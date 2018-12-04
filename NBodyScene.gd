@@ -7,7 +7,7 @@ func _ready():
 	$NBody.init(2.95912208286e-4)
 	self.add_planets()
 	
-	$NBody.setTimeScale(5000.0)
+	$NBody.setTimeScale(10)
 	$NBody.unPause()
 	
 func add_planets():
