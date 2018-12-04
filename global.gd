@@ -52,9 +52,9 @@ func set_scene(scene):
 	
 	pass
 			
-func update_data(key, index, value):
+func update_data():
 	
-	planets_data[key][index] = value
+	
 	pass
 	
 func get_startButtons_ready(all):
@@ -107,6 +107,14 @@ func has_saved_games():
 	
 	return false
 	
+func has_duplicates(temp_data):
+	
+	for index in range(planets_data.size()):
+		if planets_data[index][1] == temp_data[1] && planets_data[index][2] == temp_data[2] && planets_data[index][3] == temp_data[3]:
+			return true
+	
+	return false
+	
 func save_data():
 	
 	var table_name
@@ -116,11 +124,10 @@ func save_data():
 		if db.get_tableReady(table_name):
 			if db.save_toDB(table_name):
 				return true;
-		db.close_db();
+	db.close_db();
 	
 	return false
 		
-	
 func exit_game():
 	
 	print("deleted from global")
@@ -130,6 +137,12 @@ func exit_game():
 			print(current_scene.get_child(i))
 			current_scene.get_child(i).queue_free()
 	current_scene.queue_free()
+	
+	db.queue_free()
+	pass
+	
+
+	
 	
 	
 	

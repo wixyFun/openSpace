@@ -12,12 +12,16 @@ var Grid = preload("res://menu_grid.gd")
 var grid = Grid.new()
 var message_box = CenterContainer.new()
 var message_label = Label.new()
+var already_saved
+var added_again
 
 
 func _ready():
 	
 	self.get_message_ready()
 	self.get_container_ready()
+	already_saved = false
+	added_again = 0
 	
 	message_box.add_child(message_label)
 	self.add_child(message_box)
@@ -174,7 +178,7 @@ func add_pressed():
 	
 	#get the text from the lineEdits in the menu
 	#re-validate
-	for i in range(7):
+	for i in range(Global.data_len):
 		temp = grid.controls_dict[i][1].text
 		
 		if !self.validate_logic(temp, str(grid.controls_dict[i][0].text)): 
@@ -186,9 +190,13 @@ func add_pressed():
 		for i in range(Global.data_len):
 			temp = grid.controls_dict[i][1].text.to_float()
 			valueArray.append(temp)
-		Global.planets_data[planet_num] = valueArray
-		self.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
-	
+			
+		if !Global.has_duplicates(valueArray):
+			Global.planets_data[planet_num] = valueArray
+			added_again +=1
+			self.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
+		else:
+			self.update_message("Cannot Add Duplicate Coordinates.Re-enter!", Color(1,0,0));	
 	print(Global.planets_data)		
 
 	pass
@@ -211,14 +219,26 @@ func set_data_collection():
 	
 	pass
 """
-	
+#TODO: add update data if user will press more than once on save button	
 func save_pressed():
+	
+	if already_saved && added_again == 0:
+		update_message("This Data was Already Saved!", Color(1,0,0));
+		return
+	
+	if already_saved && added_again > 0:
+		Global.update_data();
+		self.update_message("Updating is not implemented yet", Color(1,0,0));
+		return
 	
 	if Global.planets_data.empty():
 		self.update_message("Please Add Planet Before Saving!", Color(1,0,0));
 	else:
+		self.update_message("Will Save only added data!", Color(1,0,0));
 		if Global.save_data():
 			self.update_message("The Data Was Saved.", Color(1,1,1));
+			added_again = 0
+			already_saved = true
 		else:
 			self.update_message("Could not Save Data!", Color(1,0,0));
 	
