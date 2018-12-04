@@ -162,9 +162,9 @@ func play_pressed():
 	if Global.planets_data.size() == 0 :
 		self.update_message("Enter Data for Planet/s First", Color(1,0,0))
 	else:
-		#Global.set_scene("res://NBodyDemo.tscn")
+		Global.set_scene("res://NBodyScene.tscn")
 		#Global.set_scene("res://play_scene.tscn")
-		Global.set_scene("res://orbit_scene.tscn");
+		#Global.set_scene("res://orbit_scene.tscn");
 	
 	pass
 	
