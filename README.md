@@ -1,4 +1,4 @@
-#openSpace game with GODOT engine and GDScript
+#openSpace game with GODOT engine and GDScript.
 #
 To create a test:
 ###

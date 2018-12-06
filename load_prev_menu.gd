@@ -61,6 +61,7 @@ func project_pressed(which):
 	print(which)
 	if Global.load_fromTable("'"+which+"'"):
 		print("data added form the project")
+		Global.set_scene("res://NBodyScene.tscn")
 		#Global.set_scene("res://NBodyDemo.tscn")
 		#Global.set_scene("res://play_scene.tscn")
 	else:
