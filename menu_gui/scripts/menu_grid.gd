@@ -37,7 +37,8 @@ func get_main_ready(buttons_list, labels_list):
 	buttons_grid.columns = 1
 	orbit_grid.set_up(1,5,5)
 
-	data_grid.add_parallelControls(Global.data_len)
+	#no orbiting is added here
+	data_grid.add_parallelControls(Global.data_len-1)
 	buttons_grid.add_to_grid(buttons_list)
 
 	self.add_child(data_grid)
@@ -57,25 +58,27 @@ func _process(delta):
 
 	pass
 
-func add_orbits(number):
-	
+func add_orbits(planet_index):
 	
 	var prompt
 	var name
 	
-	if planets_names.empty():
+	if planet_index == 0:
 		name = str(Global.planets_data[0][0])
-		prompt = "Choose planet for "+ str(name) + "to orbit"
-		Global.get_option_control(name, prompt,["NONE"])
+		prompt = "Choose planet for "+ str(name) + " to orbit"
+		Global.get_option_control(name, prompt,["NO Orbiting"])
+		planets_names.append("NO Orbiting")
 	
 	else:
-		name = str(Global.planets_data[number-1][0])
-		prompt = "Choose planet for "+ str(name) + "to orbit"
+		name = str(Global.planets_data[planet_index][0])
+		prompt = "Choose planet for "+ str(name) + " to orbit"
 		Global.get_option_control(name, prompt,planets_names)
-		Global.controls_dict[name].add_item("NONE")
-		for planet_button in planets_names:
-			Global.controls_dict[planet_button].add_item(name)
 		
+		#all names but not for No Orbiting
+		for i in range(1,planets_names.size()):
+			Global.controls_dict[planets_names[i]].add_item(name)
+	
+	print("name of the planet: " + name)	
 	orbit_grid.add_child(Global.controls_dict[name])
 			
 	planets_names.append(name)

@@ -10,12 +10,15 @@ var buttons_list = ["Add", "Simulate", "Save", "Exit"]
 func _ready():
 	
 	self.get_plus_ready()
+	
+	#TODO: separate speed widget
 	self.set_speed_buttons()
 	self.get_popUp_menu()
 	
 	popUp_menu.set_lists(buttons_list,data_labels)
 	popUp_menu.ready_menu()
 	Global.controls_dict["Simulate"].connect("pressed", self, "Simulate_pressed")
+	
 	
 
 	$Camera.look_at_from_position(Vector3(0,0,100), Vector3(0,0,0), Vector3(0,0,1))
@@ -37,23 +40,23 @@ func Simulate_pressed():
 	
 func get_plus_ready():
 		
-	Global.get_button_controls(["MENU"])
-	Global.controls_dict["MENU"].set_position(Vector2(20,20))
+	Global.get_button_controls(["+"])
+	Global.controls_dict["+"].set_position(Vector2(20,20))
 	
-	self.add_child(Global.controls_dict["MENU"])
-	Global.controls_dict["MENU"].connect("pressed", self, "display_menu")
+	self.add_child(Global.controls_dict["+"])
+	Global.controls_dict["+"].connect("pressed", self, "display_menu")
 	
 	pass
 	
 func set_speed_buttons():
-	
-	Global.get_button_controls(["+", "-"])
-	self.add_child(Global.controls_dict["+"])
-	self.add_child(Global.controls_dict["-"])
-	Global.controls_dict["+"].set_position(Vector2(20,40))
-	Global.controls_dict["-"].set_position(Vector2(20,60))
-	Global.controls_dict["+"].connect("pressed", self, "speed_up")
-	Global.controls_dict["-"].connect("pressed", self, "slow_down")
+	var window = OS.window_size
+	Global.get_button_controls(["slow down", "speed up"])
+	self.add_child(Global.controls_dict["speed up"])
+	self.add_child(Global.controls_dict["slow down"])
+	Global.controls_dict["speed up"].set_position(Vector2(window.x-100,window.y-100))
+	Global.controls_dict["slow down"].set_position(Vector2(window.x-200,window.y-100))
+	Global.controls_dict["speed up"].connect("pressed", self, "speed_up")
+	Global.controls_dict["slow down"].connect("pressed", self, "slow_down")
 	
 	pass
 	
@@ -64,6 +67,7 @@ func display_menu():
 	pass
 	
 func get_popUp_menu():
+	
 	
 	$PopupPanel.add_child(popUp_menu)
 	
@@ -82,7 +86,7 @@ func add_planets():
 	var planets_data = Global.planets_data
 	
 	for i in range(planets_data.size()):
-		var name = planets_data[i][0]
+		var planets_name = planets_data[i][0]
 		var mass = planets_data[i][1]
 		var radius = planets_data[i][2]
 		var X = planets_data[i][3]
@@ -93,6 +97,6 @@ func add_planets():
 		var Vz = planets_data[i][8]
 		
 		$NBody.addPlanet(mass, X, Y, Z, Vx, Vy, Vz)
-		
+		#TODO: change the color of the planet, radius, have a legend nnext to the planet
 	
 	pass

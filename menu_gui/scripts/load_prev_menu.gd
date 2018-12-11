@@ -22,6 +22,11 @@ var Mbox = preload("res://menu_gui/scripts/message_box.gd")
 var message_box = Mbox.new()
 
 
+#controls in the scene
+var edit_buttons = ["DELETE PROJECT", "Save Changes","Load Project"]
+var start_buttons = ["projects","Play New Game","Exit Game"]
+var tableName
+
 func _ready():
 	
 	message_box.get_mbox_ready("Edit or Delete Data")
@@ -37,6 +42,9 @@ func _ready():
 	self.prepare_leftGrid()
 	
 	self.connect_loadPrev_signals()
+	Global.get_button_controls(edit_buttons)
+	self.connect_edit_signals()
+	
 	
 	pass
 	
@@ -59,18 +67,29 @@ func connect_loadPrev_signals():
 	Global.controls_dict["Play New Game"].connect("pressed", self,"play_pressed");
 	pass
 	
+func connect_edit_signals():
+	
+	Global.controls_dict["DELETE PROJECT"].connect("pressed", self, "project_delete_pressed");
+	Global.controls_dict["Save Changes"].connect("pressed", self, "project_update_pressed");
+	Global.controls_dict["Load Project"].connect("pressed", self, "project_load_pressed");
+	
+	pass
+	
 func project_pressed(which):
 	print(which)
-	var tableName = Global.controls_dict["projects"].get_item_text(which)
-	self.prepare_planetsOuterGrid(tableName)
+	
+	tableName = Global.controls_dict["projects"].get_item_text(which)
+	if !Global.was_project_deleted(tableName):
+		self.prepare_planetsOuterGrid(tableName)
+	else:
+		var error = "Project was already deleted!!"
 	
 	pass
 
 func play_pressed():
 	
-	Global.set_scene("res://menu_gui/main_menu_scene.tscn")
+	Global.set_scene("res://menu_gui/NBodyScene.tscn")
 	pass
-
 
 func exit_pressed():
 	
@@ -95,7 +114,7 @@ func prepare_leftGrid():
 	var prompt = "Choose a Project to Load or Edit:"
 	Global.get_option_control("projects", prompt, Global.projects_saved)
 	
-	left_grid.add_to_grid(["projects","Play New Game","Exit Game"])
+	left_grid.add_to_grid(start_buttons)
 
 	pass
 	
@@ -108,20 +127,26 @@ func prepare_planetsOuterGrid(tableName):
 	else:#the first time
 		planetsOuter_grid.set_up(1, 30, 0)
 		planetsOuter_grid.add_child(inner_grid)
-		self.get_editButtons()
+		planetsOuter_grid.add_to_grid(edit_buttons)
 		inner_grid.set_up(Global.data_len,0,5)
 		
-	var labels_text = ["Name","Mass","Radius", "x ", "y ", "z ", "Vx ", "Vy ", "Vz "]
-		
+	var labels_text = ["Name","Mass","Radius", "x ", "y ", "z ", "Vx ", "Vy ", "Vz ", "Orbiting"]
+	
+	#saves in to the planets_data	
 	if Global.load_fromTable("'"+tableName+"'"):
 		print("data added form the project")
 		
 		Global.get_data_labels(labels_text)
 		inner_grid.add_to_grid(labels_text)
+		
+		#creates the lineEdits control and
+		#fills with the data from planets_data
 		for i in range(Global.planets_data.size()):
 			var name = str(i)+"_planet"
-			Global.load_lineEdits(name, Global.data_len)
+			Global.load_lineEdits(i, Global.data_len-1)
 			var control = Global.controls_dict[name]
+			
+			#add the textLines to the inner grid
 			for index in range(control.size()):
 				inner_grid.add_child(control[index])
 	
@@ -132,12 +157,31 @@ func prepare_planetsOuterGrid(tableName):
 	
 	pass
 	
-func get_editButtons():
 	
-	Global.get_button_controls(["DELETE PROJECT", "Save Changes","Load Project"])
-	planetsOuter_grid.add_to_grid(["DELETE PROJECT", "Save Changes","Load Project"])
+func project_delete_pressed():
+	
+	print("the table name to drop:"+tableName)
+	Global.drop_project(tableName)
 	
 	pass
 	
+#will need to go to the play scene and add planets	
+func project_load_pressed():
+	
+	#check if changes were made from the text field
+	#recheck and save the data
+	#load the play scene spawning planets
+	
+	
+	
+	pass
+	
+func project_update_pressed(table_name):
+	#get the data from the text fields
+	#drop the table 
+	#write new data to the table
+	
+	
+	pass
 
 

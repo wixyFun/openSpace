@@ -35,13 +35,16 @@ func get_tableReady(tableName):
 	# Create table if it does not exist
 	var query = "CREATE TABLE IF NOT EXISTS " + tableName + "(";
 	query += "id integer PRIMARY KEY,";
+	query += "Name text NOT NULL,";
 	query += "Mass float NOT NULL,";
+	query += "Radius float NOT NULL,";
 	query += "X float NOT NULL,";
 	query += "Y float NOT NULL,";
 	query += "Z float NOT NULL,";
 	query += "Vx float NOT NULL,";
 	query += "Vy float NOT NULL,";
 	query += "Vz float NOT NULL";
+	#query += "Orbiting text NOT NULL";
 	query += ");";
 	
 	print("finished checking table")
@@ -60,8 +63,8 @@ func save_toDB(table):
 	
 	for i in range(data.size()):
 		statement = "INSERT INTO " + table 
-		statement += "(id, Mass, X, Y, Z, Vx, Vy, Vz)"
-		statement += "VALUES('%s','%s','%s','%s','%s','%s','%s','%s');"
+		statement += "(id,Name, Mass,Radius, X, Y, Z, Vx, Vy, Vz)"#, Orbiting)"
+		statement += "VALUES('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');"#, %s');"
 	
 		
 		var parami = str(i)
@@ -72,8 +75,11 @@ func save_toDB(table):
 		var param4 = str(data[i][4]) 
 		var param5 = str(data[i][5]) 
 		var param6 = str(data[i][6]) 
+		var param7 = str(data[i][7]) 
+		var param8 = str(data[i][8]) 
+		#var param9 = str(data[i][8])
 		
-		query = statement % [parami,param0,param1,param2,param3,param4,param5,param6]
+		query = statement % [parami,param0,param1,param2,param3,param4,param5,param6,param7,param8]#,param9]
 				
 		result = db.query(query)
 	print("result of insert")

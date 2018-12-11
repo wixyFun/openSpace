@@ -16,6 +16,7 @@ var message_box = Mbox.new()
 var already_saved
 var added_again
 
+#layout helpers
 var outer_center = CenterContainer.new()
 var hBox = HBoxContainer.new()
 var vBox = VBoxContainer.new()
@@ -27,18 +28,20 @@ var buttons_list
 func _ready():
 	
 	message_box.get_mbox_ready("Enter Numeric Data Only.")
-	#message_box.set_frame(50,0,0,0)#top bottom right left
-	vBox.set_margin(MARGIN_TOP, 20)
 	
+	#to control save action
 	already_saved = false
 	added_again = 0
+	
 	self.map_layout()
-	center_container.set_frame(1,1,1,0)
-	center_container.set_sizeTo_screen(0.75)
 	
 	pass
 	
 func map_layout():
+	
+	vBox.set_margin(MARGIN_TOP, 20)#spacing for its child-message box 
+	center_container.set_frame(1,1,1,0)
+	center_container.set_sizeTo_screen(0.75)
 	
 	self.add_child(vBox)
 	vBox.add_child(message_box)
@@ -66,86 +69,47 @@ func ready_menu():
 func set_main_controls():
 	
 	for butn in buttons_list:
-		if butn != "Simulate":
-			print("buttons list size")
-			print(buttons_list.size())
+		if butn != "Simulate":# is in the demoscene script
 			Global.controls_dict[butn].connect("pressed", self, str(butn+"_pressed"))
+	
+	#no orbiting		
+	for i in range(1,Global.data_len-1):# i is the label index
+		Global.controls_dict[i][1].connect("text_changed", self, "validate_data", [i,])
 
-	grid.controls_dict[0][1].connect("text_changed", self, "validate_name")
-	grid.controls_dict[1][1].connect("text_changed", self, "validate_mass")
-	grid.controls_dict[2][1].connect("text_changed", self, "validate_radius")
-	grid.controls_dict[3][1].connect("text_changed", self, "validate_x")
-	grid.controls_dict[4][1].connect("text_changed", self, "validate_y")
-	grid.controls_dict[5][1].connect("text_changed", self, "validate_z")
-	grid.controls_dict[6][1].connect("text_changed", self, "validate_Vx")
-	grid.controls_dict[7][1].connect("text_changed", self, "validate_Vy")
-	grid.controls_dict[8][1].connect("text_changed", self, "validate_Vz")
+	pass
+
+#params: STRING -text entered and the index for the label of the textLine
+func validate_data(new_text, label_index):
 	
+	if label_index > 2:
+		return validate_floats(new_text, str(grid.controls_dict[label_index][0].text))
+	else:
+		return validate_positive(new_text, str(grid.controls_dict[label_index][0].text))
 	pass
 	
-func validate_mass(new_text):
-	
-	self.validate_logic(new_text,str(grid.controls_dict[1][0].text))
-	
-	pass
-	
-func validate_name(new_text):
-	
-	#self.validate_logic(new_text,str(grid.controls_dict[0][0].text))
-	
-	pass
-	
-func validate_radius(new_text):
-	
-	#self.validate_logic(new_text,str(grid.controls_dict[2][0].text))
-	
-	pass
-	
-func validate_x(new_text):
-	
-	self.validate_logic(new_text,str(grid.controls_dict[3][0].text))
-	pass
-	
-func validate_y(new_text):
-	
-	self.validate_logic(new_text,str(grid.controls_dict[4][0].text))
-	pass
-	
-func validate_Vx(new_text):
-	
-	self.validate_logic( new_text,str(grid.controls_dict[6][0].text))
-	pass
-	
-func validate_Vy(new_text):
-	
-	self.validate_logic(new_text,str(grid.controls_dict[7][0].text))
-	pass
-	
-func validate_Vz(new_text):
-	
-	self.validate_logic(new_text,str(grid.controls_dict[8][0].text))
-	pass
-	
-func validate_z(new_text):
-	
-	self.validate_logic(new_text,str(grid.controls_dict[5][0].text))
-	pass
-	
-func validate_logic(value, label):
+func validate_floats(value, label):
 	
 	#not an integer or a float checked
 	if !(value.is_valid_float()):
-		message_box.update_message("You Have Entered Wrong Value for ' " + label + "' \nPlease Re-enter the value !!!", Color(1,0,0))
+		message_box.update_message("You Have Entered Wrong Value for ' " + label + "'. Please Re-enter the value !!!", Color(1,0,0))
 		return false
-	else:
-		if label == str(grid.controls_dict[0][0].text):#mass
-			if value.to_float() <=0:
-				message_box.update_message("Mass Cannot Be Negative or Equal to Zero", Color(1,0,0))
-				return false
-	#all is good-resent to empty message 					
+	#if correct					
 	message_box.update_message("", Color(0,0,0))
 	
 	return true
+
+#for mass and radius, name is omitted
+func validate_positive(value, label):
+	print("in the validate positive")
+	print(label)
+	if value.to_float() <=0:
+		message_box.update_message("Can be Only Positive Numeric Values. Reenter Value for: '"+label+"'", Color(1,0,0))
+		return false
+	#if correct					
+	message_box.update_message("", Color(0,0,0))
+	
+	return true
+
 	
 #TODO add duplicate entries validation  for the coordinates !!!!!!!!!!!!	
 func Add_pressed():
@@ -158,23 +122,32 @@ func Add_pressed():
 	
 	#get the text from the lineEdits in the menu
 	#re-validate
-	for i in range(Global.data_len):
+	for i in range(Global.data_len-1):
 		temp = grid.controls_dict[i][1].text
-		"""TODO:Fix the recheck
-		if !self.validate_logic(temp, str(grid.controls_dict[i][0].text)): 
-			change = false
-		"""
+		
+		if i != 0:#name
+				if !self.validate_data(temp, i): 
+					change = false
+	
 	if !change:
 		message_box.update_message("Cannot Add Given Values, Please Reenter", Color(1,0,0))
 	else:
-		for i in range(Global.data_len):
+		#names will be saved as a string	
+		temp = str(grid.controls_dict[0][1].text)
+		valueArray.append(temp)
+		
+		for i in range(1,Global.data_len-1):
 			temp = grid.controls_dict[i][1].text.to_float()
 			valueArray.append(temp)
-			
-		if !Global.has_duplicates(valueArray):
+		
+		#save orbiting
+		
+		
+		#check name, x,y,z for duplicate values-[0,3,4,5]
+		if !Global.has_duplicates([0,3,4,5],valueArray):
 			Global.planets_data[planet_num] = valueArray
 			added_again +=1
-			grid.add_orbits(Global.planets_data.size())
+			grid.add_orbits(Global.planets_data.size()-1)
 			message_box.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
 		else:
 			message_box.update_message("Cannot Add Duplicate Coordinates.Re-enter!", Color(1,0,0));	

@@ -2,21 +2,23 @@ extends Node
 # global.gd is a singleton that is autoloaded and provides a global way of keeping record in the game
 
 """
-Global singleton will keep track of the buttons dict and planets_data, which  
-will be globally available in the game 
+TODO:Global singleton will keep track of the flow of the game and will have
+				2 class variables: controls(to manage all buttons) and db(to manage db data manipulation) 
 """
 
 # class member variables go here
 var current_scene 
-var start_screen = 'res://Start_scene.tscn'
+var start_screen = 'res://menu_gui/start_scene.tscn'
+#var display = preload("res://display_set.gd")
 #var end_screen
 
 #the number of the parameters for the planet's data
-var data_len = 7
+var data_len = 10
 var SQLite = preload("res://db.gd")
 var db = SQLite.new()
 var table_name
 var projects_saved = []
+var projects_deleted = []
 
 #dictionary to keep the data for the planets
 #number of the planet as a key and values are in the array of floats
@@ -24,22 +26,18 @@ var planets_data = {}
 
 #dictionary for buttons and other small controls 
 var controls_dict = {}
-var button_template = preload("res://Main_button.gd")
+var button_template = preload("res://menu_gui/scripts/Main_button.gd")
 
 
 func _ready():
 	
 	# set the start sceen
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
-	
+	#set_process(true)
 	#print(controls_dict.size())
 	#print(current_scene.filename)
 	pass
 
-func game_over():
-
-	#get_tree().change_scene(end_screen)
-	pass
 
 #clean the prev scene and move to the param scene
 func set_scene(scene):
@@ -54,57 +52,69 @@ func set_scene(scene):
 	
 	pass
 			
-func update_data():
-	
-	
-	pass
-	
-func get_startButtons_ready(all):
-	
-	controls_dict["new_game"] = button_template.new()
-	controls_dict["new_game"].text = "Play New Game"
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"	
-	
-	if all:
-		controls_dict["prev_game"] = button_template.new()
-		controls_dict["prev_game"].text = "Load Previous Games"
 		
-	pass
-		
-func get_mainControls_ready():
+func get_parallelControls_ready(labels_list):
 	
-	controls_dict["play"] = button_template.new()
-	controls_dict["play"].text = "Play"
-	
-	controls_dict["add"] = button_template.new()
-	controls_dict["add"].text = "Add Planet"
-	
-	controls_dict["save"] = button_template.new()
-	controls_dict["save"].text = "Save"
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"	
-	
-	var labels_text = ["Enter Mass", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
-	
-	var index = labels_text.size()
+	var index = labels_list.size()
 	
 	for i in range(index):
 		
 		controls_dict[i] = [Label.new(), LineEdit.new()]
 	
 	for i in range (index):
-		controls_dict[i][0].text = labels_text[i]
+		controls_dict[i][0].text = labels_list[i]
 		controls_dict[i][1].editable = true
 		controls_dict[i][1].expand_to_text_length = true
-		controls_dict[i][1].max_length = 5
+		controls_dict[i][1].max_length = 20
 		#controls_dict[1][1].placeholder_text = "only float values"
 	
 	pass
+
+func get_data_labels(labels_text):
 	
-#TODO will check if there are games in db	
+	for label in labels_text:
+		controls_dict[label] = Label.new()
+		controls_dict[label].text = label
+		
+	pass
+	
+func clean_up_planets():
+	if !Global.planets_data.empty():
+		var planets= Global.planets_data.keys()
+		
+		for planet in planets:
+			Global.planets_data.erase(planet)
+	print("the planets info after cleanup")
+	print(Global.planets_data)
+	
+	pass
+
+	
+func load_lineEdits(index, labels_quant):
+	
+	var name = str(index)+"_planet"
+	controls_dict[name] = []
+	
+	#for each label
+	for i in range (labels_quant):
+		var new_txtEdit = LineEdit.new()
+		new_txtEdit.editable = true
+		new_txtEdit.expand_to_text_length = true
+		new_txtEdit.max_length = 20
+		new_txtEdit.placeholder_text = str(i)	
+		new_txtEdit.text = str(planets_data[index][i])
+		controls_dict[name].append(new_txtEdit)
+	
+	pass
+	
+func get_button_controls(but_list):
+	
+	for but_name in but_list:
+		controls_dict[but_name] = button_template.new()
+		controls_dict[but_name].text = but_name
+		
+	return but_list
+	
 func has_saved_games():
 
 	if db.prepare_db():
@@ -116,14 +126,30 @@ func has_saved_games():
 			return true
 	
 	return false
-	
-func has_duplicates(temp_data):
+
+#check all planets for duplicates	
+func has_duplicates(index_list,temp_data):
 	
 	for index in range(planets_data.size()):
-		if planets_data[index][1] == temp_data[1] && planets_data[index][2] == temp_data[2] && planets_data[index][3] == temp_data[3]:
+		if recursive_check(index, index_list,temp_data):
 			return true
-	
+			
 	return false
+
+#checks one planet for duplicate: true if has duplicates	
+func recursive_check(index,index_list,temp_data):
+	print("in recursive:")
+	print(index)
+	print(index_list)
+	print(temp_data)
+	if index_list.size() == 0:
+		return false
+	else:
+		if temp_data[index_list[0]] == planets_data[index][index_list[0]]:
+			return true
+		else:
+			index_list.pop_front()
+			return recursive_check(index,index_list, temp_data)
 	
 func save_data():
 	
@@ -149,21 +175,24 @@ func exit_game():
 	db.queue_free()
 	pass
 	
-func get_loadPrev_buttons():
+func get_option_control(button_name, first_selected,items_list):
 	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"
+	controls_dict[button_name] = OptionButton.new()
 	
-	for i in range(projects_saved.size()):
-		var name = projects_saved[i]
-		controls_dict[name] = button_template.new()
-		controls_dict[name].text = name
-		
+	controls_dict[button_name].add_item(first_selected)
+	controls_dict[button_name].select(0)
+	controls_dict[button_name].set_item_disabled(0, true)
+	
+	#projects are added in the order they are in the
+	#projects_saved
+	for items in items_list:
+		controls_dict[button_name].add_item(str(items))
 	pass
 	
 func load_fromTable(table):
 	
 	var result
+	var planets_data = {}
 	
 	if db.prepare_db():
 		var statement = "SELECT * FROM %s";
@@ -171,7 +200,7 @@ func load_fromTable(table):
 		result = db.db.fetch_array(query);
 		
 		for i in range(result.size()):
-			Global.planets_data[result[i].id] = [result[i].Mass, result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz];
+			Global.planets_data[result[i].id] = [result[i].Name,result[i].Mass,result[i].Radius,result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz];#, result[i].Orbiting];
 			print(Global.planets_data[result[i].id])
 		
 		
@@ -182,46 +211,52 @@ func load_fromTable(table):
 		return true
 	
 	return false
+	
+func get_data(table):
+	
+	var result
+	
+	if db.prepare_db():
+		var statement = "SELECT * FROM %s";
+		var query = statement % table
+		print(query)
+		result = db.db.fetch_array(query);
+		print(result)
+		db.close_db();
+	
+	return result
 
-func get_orbitControls_ready():
+func _process(delta):
 	
-	controls_dict["simulate"] = button_template.new()
-	controls_dict["simulate"].text = "Simulate"
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"
-	
-	var temp_array = []
-	
-	for i in range(planets_data.size()):
-	
-		#TODO: planet's name instead?
-		var name = "index_"+str(i)
-		temp_array.append(name)
-		
-		controls_dict[name] = [Label.new(), OptionButton.new()];
-		controls_dict[name][0].text = name
+	#if controls_dict.has("projects"):
+	#	controls_dict["projects"].set_scale(Vector2(1.5, 1.5))
 		
 	
-	self.fix_dropDown(temp_array)
-		
 	pass
+
+func drop_project(table_name):
 	
-func fix_dropDown(names_array):
+	var result
+	print("dropping the project")
 	
-	var elem_num = names_array.size()
+	if db.prepare_db():
+		
+		var statement = "DROP TABLE'%s';"
+		var query = statement % table_name
+		print(query)
+		result = db.db.query(query)
+		print(result)
+		db.close_db();
+		projects_deleted.append(table_name)
 	
-	for label_index in range(elem_num):
-		for item_index in range(elem_num):
-			
-			if label_index != item_index:
-				controls_dict[names_array[label_index]][1].add_item(names_array[item_index], item_index)
-				controls_dict[names_array[label_index]][1].add_separator()
-		controls_dict[names_array[label_index]][1].add_item("NONE")		
-	pass
-	
-	
-	
-	
+	return result
+	#if error, return error message
+func was_project_deleted(table_name):
+	 
+	if projects_deleted.find(table_name) != -1:
+		return true
+		
+	return false	
+
 
 	
