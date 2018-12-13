@@ -7,6 +7,7 @@ var grid = popUp_menu.layout
 var data_labels =["Enter Name","Enter Mass","Enter Radius", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
 var buttons_list = ["Add","Simulate","Save", "Exit"]
 
+var camera_focused = false
 
 func _ready():
 	
@@ -27,7 +28,18 @@ func _ready():
 	#$NBody.setTimeScale(10)
 	#$NBody.unPause()
 
-
+func _process(delta):
+	if camera_focused:
+		var vec = Vector3(0,0,0)
+		if Input.is_action_pressed("ui_right"):
+			vec += Vector3(1, 0, 0)
+		if Input.is_action_pressed("ui_left"):
+			vec += Vector3(-1, 0, 0)
+		if Input.is_action_pressed("ui_up"):
+			vec += Vector3(0, 0, -1)
+		if Input.is_action_pressed("ui_down"):
+			vec += Vector3(0, 0, 1)
+		$Camera.translate_object_local(vec.normalized())
 
 func Simulate_pressed():
 	
@@ -37,7 +49,7 @@ func Simulate_pressed():
 	else:
 		$PopupPanel.hide()
 		self.add_planets()
-	pass
+		camera_focused = true
 	
 func get_plus_ready():
 		
@@ -46,8 +58,6 @@ func get_plus_ready():
 	
 	self.add_child(grid.controls_dict["+"])
 	grid.controls_dict["+"].connect("pressed", self, "display_menu")
-	
-	pass
 	
 func set_speed_buttons():
 	var window = OS.window_size
@@ -59,20 +69,16 @@ func set_speed_buttons():
 	grid.controls_dict["speed up"].connect("pressed", self, "speed_up")
 	grid.controls_dict["slow down"].connect("pressed", self, "slow_down")
 	
-	pass
-	
 func display_menu():
+	camera_focused = false
 	$PopupPanel.popup_centered_ratio(0.75)
 	#Global.controls_dict["+"].text = "-"
-	
-	pass
 	
 func get_popUp_ready():
 	$PopupPanel.add_child(popUp_menu)
 	
 	#get the Simulate ready
 	grid.controls_dict["Simulate"].connect("pressed", self, "Simulate_pressed")
-	pass
 	
 func speed_up():
 	# Move forward/zoom in
@@ -100,5 +106,3 @@ func add_planets():
 		
 		$NBody.addPlanet(mass, X, Y, Z, Vx, Vy, Vz)
 		#TODO: change the color of the planet, radius, have a legend nnext to the planet
-	
-	pass
