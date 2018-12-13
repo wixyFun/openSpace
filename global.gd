@@ -26,6 +26,12 @@ var planets_params = 10
 #value is the planet the index orbiting
 var orbits = []
 
+var already_saved
+var added_again
+
+signal update_message(prompt, color)
+signal add_orbits(planet_index)
+
 
 func _ready():
 	
@@ -33,7 +39,11 @@ func _ready():
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
 	#set_process(true)
 	#print(controls_dict.size())
-	#print(current_scene.filename)
+	#print(current_scene.filename
+	
+	#to control save action
+	already_saved = false
+	added_again = 0
 	pass
 
 
@@ -63,28 +73,20 @@ func clean_up_planets():
 
 
 #check all planets for duplicates	
-func has_data_duplicates(index_list,temp_data):
+func has_data_duplicates(temp_data):
 	
-	for index in range(planets_data.size()):
-		if recursive_check(index, index_list,temp_data):
+	for i in range(planets_data.size()):
+		if planets_data[i][0] == temp_data[0]:
+			emit_signal("update_message", "Name of the Planet is already in use. Please change it!",Color(1,0,0));
 			return true
 			
+		if (planets_data[i][3] == temp_data[3] && \
+			planets_data[i][4] == temp_data[4] && \
+			planets_data[i][5] == temp_data[5]):
+				emit_signal("update_message", "Coordinates of the Planet are already in use by " + planets_data[i][0] + " .Please change it!",Color(1,0,0));
+				return true
+		
 	return false
-
-#checks one planet for duplicate: true if has duplicates	
-func recursive_check(index,index_list,temp_data):
-	print("in recursive:")
-	print(index)
-	print(index_list)
-	print(temp_data)
-	if index_list.size() == 0:
-		return false
-	else:
-		if temp_data[index_list[0]] == planets_data[index][index_list[0]]:
-			return true
-		else:
-			index_list.pop_front()
-			return recursive_check(index,index_list, temp_data)
 	
 func exit_game():
 	
@@ -136,5 +138,74 @@ func load_saved_projects():
 		return false
 		
 	return true
+	
+#params: STRING -text entered and the index for the label of the textLine
+func validate_data(new_text, label, index):
+	
+	if index > 2:
+		return validate_floats(new_text, label)
+	else:
+		return validate_positive(new_text, label)
 
+	
+func validate_floats(value, label):
+	
+	#not an integer or a float checked
+	if !(value.is_valid_float()):
+		emit_signal("update_message", ("You Have Entered Wrong Value for ' " + label + "'. Please Re-enter the value !!!"), Color(1,0,0))
+		return false
+	#if correct					
+	emit_signal("update_message","", Color(0,0,0))
+	
+	return true
+
+#for mass and radius, name is omitted
+func validate_positive(value, label):
+	print("in the validate positive")
+	print(label)
+	if value.to_float() <=0:
+		emit_signal("update_message", "Can be Only Positive Numeric Values. Reenter Value for: '"+label+"'", Color(1,0,0))
+		return false
+	#if correct					
+	emit_signal("update_message","", Color(0,0,0))
+	
+	return true
+
+	
+func add_data(temp_array):
+	
+
+	var planet_key = Global.planets_data.size() 
+
+	var valueArray = []
+	var temp
+	var change = true
+	
+	#re-validate
+	for i in range(temp_array.size()):
+		if i != 0:#name
+			if !self.validate_data(temp_array[i], "", i): 
+				change = false
+	
+	if !change:
+		emit_signal("update_message","Cannot Add Given Values, Please Reenter", Color(1,0,0))
+	else:
+		
+		#move from text to approp data type	
+		valueArray.append(str(temp_array[0]))
+		
+		for i in range(1,Global.planets_params-1):
+			valueArray.append(temp_array[i].to_float())
+		
+		#check name, x,y,z for duplicate under endex-[0,3,4,5]
+		if !self.has_data_duplicates(valueArray):
+			planets_data[planet_key] = valueArray
+			orbits.append(-1)
+			added_again +=1
+			emit_signal("add_orbits", planets_data.size()-1)
+
+			emit_signal("update_message","Added Another Planet. So Far There are: " + str(planet_key + 1) + " planets", Color(2,2,2))
+
+	
+	pass
 	

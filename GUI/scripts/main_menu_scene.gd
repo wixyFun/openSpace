@@ -26,18 +26,24 @@ var controls_dict = layout.controls.controls_dict
 var message_box = layout.message_box
 var center_container = layout.center_container
 
+signal add_data(temp_data)
+signal validate_data(new_text, label, index)
+signal save_data(temp_array)
+
 
 
 func _ready():
 	
-	message_box.get_mbox_ready("Enter Numeric Data Only.")
+	message_box.get_mbox_ready("Enter Numeric Data for Coordinates, Velocity, Radius and Mass.")
 	
 	#to control save action
 	already_saved = false
-	added_again = 0
+	#added_again = 0
 	
 	self.map_layout()
 	layout.connect("orbit_defined", self, "set_orbits_controls")
+	
+	
 	
 	pass
 	
@@ -68,6 +74,14 @@ func ready_menu():
 	layout.get_main_ready(buttons_list,data_labels)
 	self.set_main_controls()
 	
+	#for signals to
+	self.connect("validate_data", Global, "validate_data")
+	self.connect("add_data", Global, "add_data")
+	
+	#for signals from
+	Global.connect("update_message", self, "update_message")
+	Global.connect("add_orbits", layout,"add_orbits")
+	
 	
 	pass
 	
@@ -86,10 +100,8 @@ func set_main_controls():
 #params: STRING -text entered and the index for the label of the textLine
 func validate_data(new_text, label_index):
 	
-	if label_index > 2:
-		return validate_floats(new_text, str(controls_dict[label_index][0].text))
-	else:
-		return validate_positive(new_text, str(controls_dict[label_index][0].text))
+	emit_signal("validate_data",new_text,str(controls_dict[label_index][0].text), label_index)
+	
 	pass
 	
 func validate_floats(value, label):
@@ -116,48 +128,19 @@ func validate_positive(value, label):
 	return true
 
 	
-#TODO add duplicate entries validation  for the coordinates !!!!!!!!!!!!	
 func Add_pressed():
 	
-	var planet_num = Global.planets_data.size() 
 
 	var valueArray = []
 	var temp
-	var change = true
 	
-	#get the text from the lineEdits in the menu
-	#re-validate
+	#get all the values from the labels
 	for i in range(Global.planets_params-1):
 		temp = controls_dict[i][1].text
-		
-		if i != 0:#name
-				if !self.validate_data(temp, i): 
-					change = false
-	
-	if !change:
-		message_box.update_message("Cannot Add Given Values, Please Reenter", Color(1,0,0))
-	else:
-		#names will be saved as a string	
-		temp = str(controls_dict[0][1].text)
 		valueArray.append(temp)
 		
-		for i in range(1,Global.planets_params-1):
-			temp = controls_dict[i][1].text.to_float()
-			valueArray.append(temp)
-		
-		#save orbiting
-		
-		
-		#check name, x,y,z for duplicate values-[0,3,4,5]
-		if !Global.has_data_duplicates([0,3,4,5],valueArray):
-			Global.planets_data[planet_num] = valueArray
-			Global.orbits.append(-1)
-			added_again +=1
-			layout.add_orbits(Global.planets_data.size()-1)
-			message_box.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
-		else:
-			message_box.update_message("Cannot Add Duplicate Coordinates.Re-enter!", Color(1,0,0));	
-	print(Global.planets_data)		
+	emit_signal("add_data",valueArray)
+			
 
 	pass
 
@@ -210,10 +193,6 @@ func set_orbits_controls(name, planet_index):
 	
 func orbit_selected(which, name, planet_key):
 	
-	print(name)
-	print(which)
-	print(planet_key)
-	
 	var orbits_name 
 	
 	for i in range(Global.planets_data.size()):
@@ -224,6 +203,12 @@ func orbit_selected(which, name, planet_key):
 		if Global.planets_data[i][0] == orbits_name:
 			Global.orbits[planet_key] = i
 				
-	print(Global.orbits)
+	pass
+	
+func update_message(text, color):
+	
+	print("update")
+	
+	message_box.update_message(text,color)
 	
 	pass
