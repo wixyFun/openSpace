@@ -8,7 +8,7 @@ var data_labels =["Enter Name","Enter Mass","Enter Radius", "Enter x ", "Enter y
 var buttons_list = ["Add","Simulate","Save", "Exit"]
 
 var camera_focused = false
-
+var G = 2.95912208286e-4
 func _ready():
 	
 	self.get_plus_ready()
@@ -22,7 +22,7 @@ func _ready():
 	print(popUp_menu.layout.data_grid.get_children())
 	
 	$Camera.look_at_from_position(Vector3(0,0,100), Vector3(0,0,0), Vector3(0,0,1))
-	$NBody.init(2.95912208286e-4)
+	$NBody.init(G)
 	
 	
 	#$NBody.setTimeScale(10)
@@ -88,10 +88,59 @@ func speed_up():
 func slow_down():
 	$Camera.translate(Vector3(0,0,10))
 
+func set_orbits(planets, orbits):
+	for i in range(0, orbits.size()):
+		# Get center index
+		var j = orbits[i]
+		# 
+		assert (i != j)
+		if j != -1:
+			var ix = planets[i][3]
+			var iy = planets[i][4]
+			var iz = planets[i][5]
+			var iX = Vector3(ix,iy,iz)
+			var ivx = planets[i][6]
+			var ivy = planets[i][7]
+			var ivz = planets[i][8]
+			var iV = Vector3(ivx,ivy,ivz)
+			var jm = planets[j][1]
+			var jx = planets[j][3]
+			var jy = planets[j][4]
+			var jz = planets[j][5]
+			var jX = Vector3(jx,jy,jz)
+			var jvx = planets[j][6]
+			var jvy = planets[j][7]
+			var jvz = planets[j][8]
+			var jV = Vector3(jvx,jvy,jvz)
+			
+			var R = jX - iX
+			var r = R.length()
+			var v = sqrt(G * jm / r) # Orbital speed
+			# Same inclination as original velocity
+			var n = iV - R.normalized() * (iV.dot(R.normalized()))
+			print(n)
+			# If original velocity is aligned with _R_,
+			# then perpendicular to Z axis
+			#n = R.cross(Vector3(0,0,1)) if n.length()==0.0 else n
+			if n.length() < 0.001:
+				n = n + Vector3(1, 0, 0)
+			n = n - R.normalized() * (n.dot(R.normalized()))
+			if n.length() < 0.001:
+				n = n + Vector3(0, 1, 0)				
+			n = n - R.normalized() * (n.dot(R.normalized()))
+			# Make sure adjust for j's orbital velocity
+			var iV_new = v * n.normalized() + jV
+			planets[i][6] = iV_new.x
+			planets[i][7] = iV_new.y
+			planets[i][8] = iV_new.z
+	
+
 	
 func add_planets():
 	
 	var planets_data = Global.planets_data
+	var orbits = Global.orbits
+	set_orbits(planets_data, orbits)
 	
 	for i in range(planets_data.size()):
 		var planets_name = planets_data[i][0]
@@ -105,4 +154,6 @@ func add_planets():
 		var Vz = planets_data[i][8]
 		
 		$NBody.addPlanet(mass, X, Y, Z, Vx, Vy, Vz)
+		$NBody.setTimeScale(10)
+		$NBody.unPause()
 		#TODO: change the color of the planet, radius, have a legend nnext to the planet
