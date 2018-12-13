@@ -1,32 +1,30 @@
 extends Node
 # global.gd is a singleton that is autoloaded and provides a global way of keeping record in the game
 
-"""
-TODO:Global singleton will keep track of the flow of the game and will have
-				2 class variables: controls(to manage all buttons) and db(to manage db data manipulation) 
-"""
 
 # class member variables go here
 var current_scene 
-var start_screen = 'res://menu_gui/start_scene.tscn'
-#var display = preload("res://display_set.gd")
-#var end_screen
+var start_screen = "res://GUI/Start_scene.tscn"
+var play_scene = "res://GUI/NBodyScene.tscn"
+var load_prev_scene = "res://GUI/Load_prev_scene.tscn"
+var end_screen = start_screen
 
 #the number of the parameters for the planet's data
-var data_len = 10
-var SQLite = preload("res://db.gd")
+var SQLite = preload("res://top_db.gd")
 var db = SQLite.new()
-var table_name
+
 var projects_saved = []
 var projects_deleted = []
+
 
 #dictionary to keep the data for the planets
 #number of the planet as a key and values are in the array of floats
 var planets_data = {}
+var planets_params = 10
 
-#dictionary for buttons and other small controls 
-var controls_dict = {}
-var button_template = preload("res://menu_gui/scripts/Main_button.gd")
+#index of the array is index of the planet
+#value is the planet the index orbiting
+var orbits = []
 
 
 func _ready():
@@ -51,33 +49,7 @@ func set_scene(scene):
 	get_tree().get_root().add_child(current_scene)
 	
 	pass
-			
-		
-func get_parallelControls_ready(labels_list):
-	
-	var index = labels_list.size()
-	
-	for i in range(index):
-		
-		controls_dict[i] = [Label.new(), LineEdit.new()]
-	
-	for i in range (index):
-		controls_dict[i][0].text = labels_list[i]
-		controls_dict[i][1].editable = true
-		controls_dict[i][1].expand_to_text_length = true
-		controls_dict[i][1].max_length = 20
-		#controls_dict[1][1].placeholder_text = "only float values"
-	
-	pass
-
-func get_data_labels(labels_text):
-	
-	for label in labels_text:
-		controls_dict[label] = Label.new()
-		controls_dict[label].text = label
-		
-	pass
-	
+				
 func clean_up_planets():
 	if !Global.planets_data.empty():
 		var planets= Global.planets_data.keys()
@@ -89,46 +61,9 @@ func clean_up_planets():
 	
 	pass
 
-	
-func load_lineEdits(index, labels_quant):
-	
-	var name = str(index)+"_planet"
-	controls_dict[name] = []
-	
-	#for each label
-	for i in range (labels_quant):
-		var new_txtEdit = LineEdit.new()
-		new_txtEdit.editable = true
-		new_txtEdit.expand_to_text_length = true
-		new_txtEdit.max_length = 20
-		new_txtEdit.placeholder_text = str(i)	
-		new_txtEdit.text = str(planets_data[index][i])
-		controls_dict[name].append(new_txtEdit)
-	
-	pass
-	
-func get_button_controls(but_list):
-	
-	for but_name in but_list:
-		controls_dict[but_name] = button_template.new()
-		controls_dict[but_name].text = but_name
-		
-	return but_list
-	
-func has_saved_games():
-
-	if db.prepare_db():
-		db.fetch_allTables();
-		
-		db.close_db();
-		if !projects_saved.empty():
-			print(projects_saved)
-			return true
-	
-	return false
 
 #check all planets for duplicates	
-func has_duplicates(index_list,temp_data):
+func has_data_duplicates(index_list,temp_data):
 	
 	for index in range(planets_data.size()):
 		if recursive_check(index, index_list,temp_data):
@@ -151,17 +86,6 @@ func recursive_check(index,index_list,temp_data):
 			index_list.pop_front()
 			return recursive_check(index,index_list, temp_data)
 	
-func save_data():
-	
-	if db.prepare_db():
-		table_name = "'" + db.get_TName()+ "'";
-		if db.get_tableReady(table_name):
-			if db.save_toDB(table_name):
-				return true;
-	db.close_db();
-	
-	return false
-		
 func exit_game():
 	
 	print("deleted from global")
@@ -175,81 +99,21 @@ func exit_game():
 	db.queue_free()
 	pass
 	
-func get_option_control(button_name, first_selected,items_list):
-	
-	controls_dict[button_name] = OptionButton.new()
-	
-	controls_dict[button_name].add_item(first_selected)
-	controls_dict[button_name].select(0)
-	controls_dict[button_name].set_item_disabled(0, true)
-	
-	#projects are added in the order they are in the
-	#projects_saved
-	for items in items_list:
-		controls_dict[button_name].add_item(str(items))
-	pass
-	
-func load_fromTable(table):
-	
-	var result
-	var planets_data = {}
-	
-	if db.prepare_db():
-		var statement = "SELECT * FROM %s";
-		var query = statement % table
-		result = db.db.fetch_array(query);
-		
-		for i in range(result.size()):
-			Global.planets_data[result[i].id] = [result[i].Name,result[i].Mass,result[i].Radius,result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz];#, result[i].Orbiting];
-			print(Global.planets_data[result[i].id])
-		
-		
-		print("all the data from the table")
-		print(result)
-		
-		db.close_db();
-		return true
-	
-	return false
-	
-func get_data(table):
-	
-	var result
-	
-	if db.prepare_db():
-		var statement = "SELECT * FROM %s";
-		var query = statement % table
-		print(query)
-		result = db.db.fetch_array(query);
-		print(result)
-		db.close_db();
-	
-	return result
+
 
 func _process(delta):
 	
 	#if controls_dict.has("projects"):
 	#	controls_dict["projects"].set_scale(Vector2(1.5, 1.5))
 		
-	
 	pass
 
-func drop_project(table_name):
+
+func update_deleted_projects(project):
 	
-	var result
-	print("dropping the project")
+	projects_deleted.append(project)
+	pass
 	
-	if db.prepare_db():
-		
-		var statement = "DROP TABLE'%s';"
-		var query = statement % table_name
-		print(query)
-		result = db.db.query(query)
-		print(result)
-		db.close_db();
-		projects_deleted.append(table_name)
-	
-	return result
 	#if error, return error message
 func was_project_deleted(table_name):
 	 
@@ -258,5 +122,19 @@ func was_project_deleted(table_name):
 		
 	return false	
 
+func update_saved_projects(name):
+	Global.projects_saved.append(name);
+	pass
+	
+func load_saved_projects():
+	var temp = db.has_saved_games()
+	
+	for project in temp:
+		projects_saved.append(project)
+		
+	if projects_saved.empty():
+		return false
+		
+	return true
 
 	
