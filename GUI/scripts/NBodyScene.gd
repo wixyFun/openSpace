@@ -153,7 +153,7 @@ func add_planets():
 		var Vy = planets_data[i][7]
 		var Vz = planets_data[i][8]
 		
-		$NBody.addPlanet(mass, X, Y, Z, Vx, Vy, Vz)
+		$NBody.addPlanet(mass, radius, X, Y, Z, Vx, Vy, Vz)
 		$NBody.setTimeScale(10)
 		$NBody.unPause()
 		#TODO: change the color of the planet, radius, have a legend nnext to the planet
