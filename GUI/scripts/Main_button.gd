@@ -6,13 +6,15 @@ TODO: set the theme and the size, methods for updating/setting those
 
 extends Button
 
-# class member variables go here, for example:
+# class member variables:
+var scale 
 
 
 
 func _init():  
 
 	self.text = "Change My Text"
+	#scale = Vector2(1.5, 1.5)
 
 	set_process(true)
 	
@@ -22,7 +24,7 @@ func _init():
 func _process(delta):
 	
 	#set_size(Vector2 (100, 50))
-	set_scale (Vector2(1.5, 1.5))
+	#set_scale (scale)
 	
 	pass
 	

@@ -1,45 +1,41 @@
 extends Node
 # global.gd is a singleton that is autoloaded and provides a global way of keeping record in the game
 
-"""
-Global singleton will keep track of the buttons dict and planets_data, which  
-will be globally available in the game 
-"""
 
 # class member variables go here
 var current_scene 
-var start_screen = 'res://Start_scene.tscn'
-#var end_screen
+var start_screen = "res://GUI/Start_scene.tscn"
+var play_scene = "res://GUI/NBodyScene.tscn"
+var load_prev_scene = "res://GUI/Load_prev_scene.tscn"
+var end_screen = start_screen
 
 #the number of the parameters for the planet's data
-var data_len = 7
-var SQLite = preload("res://db.gd")
+var SQLite = preload("res://top_db.gd")
 var db = SQLite.new()
-var table_name
+
 var projects_saved = []
+var projects_deleted = []
+
 
 #dictionary to keep the data for the planets
 #number of the planet as a key and values are in the array of floats
 var planets_data = {}
+var planets_params = 10
 
-#dictionary for buttons and other small controls 
-var controls_dict = {}
-var button_template = preload("res://Main_button.gd")
+#index of the array is index of the planet
+#value is the planet the index orbiting
+var orbits = []
 
 
 func _ready():
 	
 	# set the start sceen
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
-	
+	#set_process(true)
 	#print(controls_dict.size())
 	#print(current_scene.filename)
 	pass
 
-func game_over():
-
-	#get_tree().change_scene(end_screen)
-	pass
 
 #clean the prev scene and move to the param scene
 func set_scene(scene):
@@ -53,89 +49,43 @@ func set_scene(scene):
 	get_tree().get_root().add_child(current_scene)
 	
 	pass
-			
-func update_data():
-	
+				
+func clean_up_planets():
+	if !Global.planets_data.empty():
+		var planets= Global.planets_data.keys()
+		
+		for planet in planets:
+			Global.planets_data.erase(planet)
+	print("the planets info after cleanup")
+	print(Global.planets_data)
 	
 	pass
-	
-func get_startButtons_ready(all):
-	
-	controls_dict["new_game"] = button_template.new()
-	controls_dict["new_game"].text = "Play New Game"
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"	
-	
-	if all:
-		controls_dict["prev_game"] = button_template.new()
-		controls_dict["prev_game"].text = "Load Previous Games"
-		
-	pass
-		
-func get_mainControls_ready():
-	
-	controls_dict["play"] = button_template.new()
-	controls_dict["play"].text = "Play"
-	
-	controls_dict["add"] = button_template.new()
-	controls_dict["add"].text = "Add Planet"
-	
-	controls_dict["save"] = button_template.new()
-	controls_dict["save"].text = "Save"
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"	
-	
-	var labels_text = ["Enter Mass", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
-	
-	var index = labels_text.size()
-	
-	for i in range(index):
-		
-		controls_dict[i] = [Label.new(), LineEdit.new()]
-	
-	for i in range (index):
-		controls_dict[i][0].text = labels_text[i]
-		controls_dict[i][1].editable = true
-		controls_dict[i][1].expand_to_text_length = true
-		controls_dict[i][1].max_length = 5
-		#controls_dict[1][1].placeholder_text = "only float values"
-	
-	pass
-	
-#TODO will check if there are games in db	
-func has_saved_games():
 
-	if db.prepare_db():
-		db.fetch_allTables();
-		
-		db.close_db();
-		if !projects_saved.empty():
-			print(projects_saved)
-			return true
-	
-	return false
-	
-func has_duplicates(temp_data):
+
+#check all planets for duplicates	
+func has_data_duplicates(index_list,temp_data):
 	
 	for index in range(planets_data.size()):
-		if planets_data[index][1] == temp_data[1] && planets_data[index][2] == temp_data[2] && planets_data[index][3] == temp_data[3]:
+		if recursive_check(index, index_list,temp_data):
 			return true
-	
+			
 	return false
+
+#checks one planet for duplicate: true if has duplicates	
+func recursive_check(index,index_list,temp_data):
+	print("in recursive:")
+	print(index)
+	print(index_list)
+	print(temp_data)
+	if index_list.size() == 0:
+		return false
+	else:
+		if temp_data[index_list[0]] == planets_data[index][index_list[0]]:
+			return true
+		else:
+			index_list.pop_front()
+			return recursive_check(index,index_list, temp_data)
 	
-func save_data():
-	
-	if db.prepare_db():
-		table_name = "'" + db.get_TName()+ "'";
-		if db.get_tableReady(table_name):
-			if db.save_toDB(table_name):
-				return true;
-	db.close_db();
-	
-	return false
-		
 func exit_game():
 	
 	print("deleted from global")
@@ -149,79 +99,42 @@ func exit_game():
 	db.queue_free()
 	pass
 	
-func get_loadPrev_buttons():
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"
-	
-	for i in range(projects_saved.size()):
-		var name = projects_saved[i]
-		controls_dict[name] = button_template.new()
-		controls_dict[name].text = name
-		
-	pass
-	
-func load_fromTable(table):
-	
-	var result
-	
-	if db.prepare_db():
-		var statement = "SELECT * FROM %s";
-		var query = statement % table
-		result = db.db.fetch_array(query);
-		
-		for i in range(result.size()):
-			Global.planets_data[result[i].id] = [result[i].Mass, result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz];
-			print(Global.planets_data[result[i].id])
-		
-		
-		print("all the data from the table")
-		print(result)
-		
-		db.close_db();
-		return true
-	
-	return false
 
-func get_orbitControls_ready():
+
+func _process(delta):
 	
-	controls_dict["simulate"] = button_template.new()
-	controls_dict["simulate"].text = "Simulate"
-	
-	controls_dict["exit"] = button_template.new()
-	controls_dict["exit"].text = "Exit Game"
-	
-	var temp_array = []
-	
-	for i in range(planets_data.size()):
-	
-		#TODO: planet's name instead?
-		var name = "index_"+str(i)
-		temp_array.append(name)
-		
-		controls_dict[name] = [Label.new(), OptionButton.new()];
-		controls_dict[name][0].text = name
-		
-	
-	self.fix_dropDown(temp_array)
+	#if controls_dict.has("projects"):
+	#	controls_dict["projects"].set_scale(Vector2(1.5, 1.5))
 		
 	pass
+
+
+func update_deleted_projects(project):
 	
-func fix_dropDown(names_array):
-	
-	var elem_num = names_array.size()
-	
-	for label_index in range(elem_num):
-		for item_index in range(elem_num):
-			
-			if label_index != item_index:
-				controls_dict[names_array[label_index]][1].add_item(names_array[item_index], item_index)
-				controls_dict[names_array[label_index]][1].add_separator()
-		controls_dict[names_array[label_index]][1].add_item("NONE")		
+	projects_deleted.append(project)
 	pass
 	
+	#if error, return error message
+func was_project_deleted(table_name):
+	 
+	if projects_deleted.find(table_name) != -1:
+		return true
+		
+	return false	
+
+func update_saved_projects(name):
+	Global.projects_saved.append(name);
+	pass
 	
+func load_saved_projects():
+	var temp = db.has_saved_games()
 	
-	
+	for project in temp:
+		projects_saved.append(project)
+		
+	if projects_saved.empty():
+		return false
+		
+	return true
 
 	
