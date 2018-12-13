@@ -75,12 +75,13 @@ func get_popUp_ready():
 	pass
 	
 func speed_up():
-	
-	pass
+	# Move forward/zoom in
+	$Camera.translate(Vector3(0,0,-10))
+
 	
 func slow_down():
-	
-	pass
+	$Camera.translate(Vector3(0,0,10))
+
 	
 func add_planets():
 	

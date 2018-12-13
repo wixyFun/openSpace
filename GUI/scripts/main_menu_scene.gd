@@ -146,17 +146,22 @@ func Add_pressed():
 			valueArray.append(temp)
 		
 		#save orbiting
-		
+		Global.planets_data[planet_num] = valueArray
+		Global.orbits.append(-1)
+		added_again +=1
+		layout.add_orbits(Global.planets_data.size()-1)
+		message_box.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
+	
 		
 		#check name, x,y,z for duplicate values-[0,3,4,5]
-		if !Global.has_data_duplicates([0,3,4,5],valueArray):
-			Global.planets_data[planet_num] = valueArray
-			Global.orbits.append(-1)
-			added_again +=1
-			layout.add_orbits(Global.planets_data.size()-1)
-			message_box.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
-		else:
-			message_box.update_message("Cannot Add Duplicate Coordinates.Re-enter!", Color(1,0,0));	
+#		if !Global.has_data_duplicates([0,3,4,5],valueArray):
+#			Global.planets_data[planet_num] = valueArray
+#			Global.orbits.append(-1)
+#			added_again +=1
+#			layout.add_orbits(Global.planets_data.size()-1)
+#			message_box.update_message("Added Another Planet. So Far There are: " + str(planet_num + 1) + " planets", Color(2,2,2))
+#		else:
+#			message_box.update_message("Cannot Add Duplicate Coordinates.Re-enter!", Color(1,0,0));	
 	print(Global.planets_data)		
 
 	pass
