@@ -22,6 +22,9 @@ var center_container = Center.new()
 var Mbox = preload("res://GUI/scripts/message_box.gd")
 var message_box = Mbox.new()
 
+var Scroll = preload("res://GUI/scripts/scroll_container.gd")
+var scroll_container = Scroll.new() 
+
 
 func _ready():
 

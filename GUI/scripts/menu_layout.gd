@@ -29,13 +29,8 @@ func _ready():
 #TODO split into several methods
 func get_main_ready(buttons_list, labels_list):
 	
-	print(buttons_list)
-	print(labels_list)
-
 	controls.get_button_controls(buttons_list)
 	controls.get_parallelControls_ready(labels_list)
-
-	print(controls.controls_dict)
 	
 	self.set_up(2,5,5)
 	
@@ -45,7 +40,7 @@ func get_main_ready(buttons_list, labels_list):
 
 	#no orbiting is added here
 	data_grid.add_parallelControls(labels_list,controls_dict)
-	print(controls.controls_dict)
+	
 	buttons_grid.add_to_grid(buttons_list, controls_dict)
 
 	self.add_child(data_grid)
@@ -72,14 +67,13 @@ func add_orbits(planet_index):
 	else:
 		name = str(Global.planets_data[planet_index][0])
 		prompt = "Choose planet for "+ str(name) + " to orbit"
-		print(planets_names)
+		
 		controls.get_option_control(name, prompt,planets_names)
 		
 		#all names but not for No Orbiting
 		for i in range(1,planets_names.size()):
 			controls.controls_dict[planets_names[i]].add_item(name)
 	
-	print("name of the planet: " + name)	
 	orbit_grid.add_child(controls.controls_dict[name])
 	emit_signal("orbit_defined", name, planet_index)
 			

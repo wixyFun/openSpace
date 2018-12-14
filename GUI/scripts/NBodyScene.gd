@@ -4,7 +4,7 @@ var Menu = preload("res://GUI/scripts/main_menu_scene.gd")
 var popUp_menu = Menu.new()
 var grid = popUp_menu.layout
 
-var data_labels =["Enter Name","Enter Mass","Enter Radius", "Enter x ", "Enter y ", "Enter z ", "Enter Vx ", "Enter Vy ", "Enter Vz "]
+var data_labels =["Enter Name (any symbol)","Enter Mass (number>0)","Enter Radius (number>0)", "Enter x (any float value)", "Enter y (any float value)", "Enter z (any float value)", "Enter Vx (any float value)", "Enter Vy (any float value)", "Enter Vz (any float value)"]
 var buttons_list = ["Add","Simulate","Save", "Exit"]
 
 var camera_focused = false
@@ -13,13 +13,11 @@ func _ready():
 	
 	self.get_plus_ready()
 	
-	#TODO: separate speed widget
-	self.set_speed_buttons()
+	self.get_speed_buttons()
 	popUp_menu.set_lists(buttons_list,data_labels)
 	popUp_menu.ready_menu()
 	self.get_popUp_ready()
 	
-	print(popUp_menu.layout.data_grid.get_children())
 	
 	$Camera.look_at_from_position(Vector3(0,0,100), Vector3(0,0,0), Vector3(0,0,1))
 	$NBody.init(G)
@@ -59,7 +57,9 @@ func get_plus_ready():
 	self.add_child(grid.controls_dict["+"])
 	grid.controls_dict["+"].connect("pressed", self, "display_menu")
 	
-func set_speed_buttons():
+	
+func get_speed_buttons():
+
 	var window = OS.window_size
 	grid.controls.get_button_controls(["slow down", "speed up"])
 	self.add_child(grid.controls_dict["speed up"])
@@ -72,7 +72,8 @@ func set_speed_buttons():
 func display_menu():
 	camera_focused = false
 	$PopupPanel.popup_centered_ratio(0.75)
-	#Global.controls_dict["+"].text = "-"
+	
+	#grid.controls_dict["+"].hide()
 	
 func get_popUp_ready():
 	$PopupPanel.add_child(popUp_menu)
