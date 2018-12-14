@@ -11,8 +11,6 @@ extends Node2D
 var Grid = preload("res://GUI/scripts/menu_layout.gd")
 var layout = Grid.new()
 
-var already_saved
-var added_again
 
 #layout helpers
 var outer_center = CenterContainer.new()
@@ -28,23 +26,18 @@ var center_container = layout.center_container
 
 signal add_data(temp_data)
 signal validate_data(new_text, label, index)
-signal save_data(temp_array)
+signal save_data()
+signal update_orbitsDB(planet_key,i)
 
 
 
 func _ready():
 	
 	message_box.get_mbox_ready("Enter Numeric Data for Coordinates, Velocity, Radius and Mass.")
-	
-	#to control save action
-	already_saved = false
-	#added_again = 0
-	
+		
 	self.map_layout()
 	layout.connect("orbit_defined", self, "set_orbits_controls")
-	
-	
-	
+	self.connect("update_orbitsDB",Global, "update_orbitsDB")
 	pass
 	
 func map_layout():
@@ -77,6 +70,7 @@ func ready_menu():
 	#for signals to
 	self.connect("validate_data", Global, "validate_data")
 	self.connect("add_data", Global, "add_data")
+	self.connect("save_data", Global, "save_toDB")
 	
 	#for signals from
 	Global.connect("update_message", self, "update_message")
@@ -117,8 +111,7 @@ func validate_floats(value, label):
 
 #for mass and radius, name is omitted
 func validate_positive(value, label):
-	print("in the validate positive")
-	print(label)
+	
 	if value.to_float() <=0:
 		message_box.update_message("Can be Only Positive Numeric Values. Reenter Value for: '"+label+"'", Color(1,0,0))
 		return false
@@ -146,32 +139,30 @@ func Add_pressed():
 
 #TODO: add update data if user will press more than once on save button	
 func Save_pressed():
+	var already_saved = Global.already_saved
+	var added_again = Global.added_again
 	
-	if already_saved && added_again == 0:
-		message_box.update_message("This Data was Already Saved!", Color(1,0,0));
+	if already_saved > 0 && added_again == 0:
+		message_box.update_message("This Data was Already Saved! Do not Forget to Add before Saving", Color(1,0,0));
 		return
 	
-	if already_saved && added_again > 0:
-		#Global.update_data();
-		message_box.update_message("Updating is not implemented yet", Color(1,0,0));
-		return
-	
-	if Global.planets_data.empty():
-		message_box.update_message("Please Add Planet Before Saving!", Color(1,0,0));
-	else:
+	if already_saved > 0 && added_again > 0:
 		message_box.update_message("Will Save only added data!", Color(1,0,0));
-		if Global.save_data():
-			message_box.update_message("The Data Was Saved.", Color(1,1,1));
-			added_again = 0
-			already_saved = true
-		else:
-			message_box.update_message("Could not Save Data!", Color(1,0,0));
+		emit_signal("save_data")
+		return
+		
+	if already_saved == 0 && added_again == 0:
+		message_box.update_message("Please Add Planet Before Saving!", Color(1,0,0));
+		return
+		
+	if already_saved == 0 && added_again > 0:
+		message_box.update_message("Will Save only added data!", Color(1,0,0));
+		emit_signal("save_data") 
+		return
 	
-	pass
 	
 func Exit_pressed():
-	
-	print("deleted from grid")
+
 	for i in range(0,layout.get_child_count()):
 	
 		layout.get_child(i).queue_free()
@@ -185,8 +176,6 @@ func Exit_pressed():
 	
 func set_orbits_controls(name, planet_index):
 	
-	print("the set_orbit called "+ name)
-	
 	controls_dict[name].connect("item_selected", self, "orbit_selected", [name,planet_index,]);
 	
 	pass
@@ -198,16 +187,16 @@ func orbit_selected(which, name, planet_key):
 	for i in range(Global.planets_data.size()):
 		if Global.planets_data[i][0] == name:
 			orbits_name = layout.controls.controls_dict[name].get_item_text(which)
+	
 			
 	for i in range(Global.planets_data.size()):
 		if Global.planets_data[i][0] == orbits_name:
 			Global.orbits[planet_key] = i
+	
 				
 	pass
 	
 func update_message(text, color):
-	
-	print("update")
 	
 	message_box.update_message(text,color)
 	

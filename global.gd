@@ -12,6 +12,7 @@ var end_screen = start_screen
 #the number of the parameters for the planet's data
 var SQLite = preload("res://top_db.gd")
 var db = SQLite.new()
+var current_table
 
 var projects_saved = []
 var projects_deleted = []
@@ -33,17 +34,19 @@ signal update_message(prompt, color)
 signal add_orbits(planet_index)
 
 
+
 func _ready():
 	
 	# set the start sceen
 	current_scene = get_tree().get_root().get_child(get_tree().get_root().get_child_count() -1)
-	#set_process(true)
-	#print(controls_dict.size())
-	#print(current_scene.filename
 	
 	#to control save action
-	already_saved = false
+	already_saved = 0
 	added_again = 0
+	current_table = ""
+	
+	db.connect("set_current_table",self,"set_current_table")
+	
 	pass
 
 
@@ -66,9 +69,7 @@ func clean_up_planets():
 		
 		for planet in planets:
 			Global.planets_data.erase(planet)
-	print("the planets info after cleanup")
-	print(Global.planets_data)
-	
+
 	pass
 
 
@@ -90,11 +91,10 @@ func has_data_duplicates(temp_data):
 	
 func exit_game():
 	
-	print("deleted from global")
 	if current_scene != null :
 	   #clean up the current scene
 		for i in range(0,current_scene.get_child_count()):
-			print(current_scene.get_child(i))
+		
 			current_scene.get_child(i).queue_free()
 	current_scene.queue_free()
 	
@@ -131,9 +131,11 @@ func update_saved_projects(name):
 func load_saved_projects():
 	var temp = db.has_saved_games()
 	
-	for project in temp:
-		projects_saved.append(project)
+	if temp != null:
 		
+		for project in temp:
+			projects_saved.append(project)
+			
 	if projects_saved.empty():
 		return false
 		
@@ -161,8 +163,7 @@ func validate_floats(value, label):
 
 #for mass and radius, name is omitted
 func validate_positive(value, label):
-	print("in the validate positive")
-	print(label)
+
 	if value.to_float() <=0:
 		emit_signal("update_message", "Can be Only Positive Numeric Values. Reenter Value for: '"+label+"'", Color(1,0,0))
 		return false
@@ -201,11 +202,33 @@ func add_data(temp_array):
 		if !self.has_data_duplicates(valueArray):
 			planets_data[planet_key] = valueArray
 			orbits.append(-1)
+			db.orbits_inDB.append(-1)
 			added_again +=1
+			
 			emit_signal("add_orbits", planets_data.size()-1)
 
 			emit_signal("update_message","Added Another Planet. So Far There are: " + str(planet_key + 1) + " planets", Color(2,2,2))
 
+	pass
 	
+func save_toDB():
+	
+	if db.save_data(planets_data, orbits,already_saved):
+		emit_signal("update_message","The Data Was Saved.", Color(1,1,1));
+		added_again = 0
+		already_saved += 1
+		db.update_orbitsDB()
+	else:
+		emit_signal("update_message", "Could not Save Data!", Color(1,0,0));
+	
+	pass
+	
+func update_toDB():
+	
+	pass
+	
+func set_current_table(table):
+	
+	current_table = table
 	pass
 	
