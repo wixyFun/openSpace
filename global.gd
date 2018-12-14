@@ -29,6 +29,7 @@ var orbits = []
 
 var already_saved
 var added_again
+var update_orbits = false
 
 signal update_message(prompt, color)
 signal add_orbits(planet_index)
@@ -134,8 +135,8 @@ func load_saved_projects():
 	if temp != null:
 		
 		for project in temp:
-			projects_saved.append(project)
-			
+			projects_saved.append(project.name)
+					
 	if projects_saved.empty():
 		return false
 		
@@ -218,12 +219,18 @@ func save_toDB():
 		added_again = 0
 		already_saved += 1
 		db.update_orbitsDB()
+		update_orbits = false
 	else:
 		emit_signal("update_message", "Could not Save Data!", Color(1,0,0));
 	
 	pass
 	
-func update_toDB():
+func update_toDB(which_param):
+	
+	print("updating orbits")
+	
+	if which_param == 9:
+		db.update_orbitsDB()
 	
 	pass
 	
@@ -232,3 +239,10 @@ func set_current_table(table):
 	current_table = table
 	pass
 	
+func load_planets_data(table):
+	
+	planets_data = db.load_from_table(table)
+	
+	if planets_data.empty():
+		return false
+	return true

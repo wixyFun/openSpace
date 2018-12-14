@@ -2,7 +2,7 @@
 Class main_menu_scene is responsible for the start and main menus'
 functionality/buttons response
 """
-#TODO: automatical resizing depending on the os window size
+
 
 extends Node2D
 
@@ -24,10 +24,12 @@ var controls_dict = layout.controls.controls_dict
 var message_box = layout.message_box
 var center_container = layout.center_container
 
+
 signal add_data(temp_data)
 signal validate_data(new_text, label, index)
 signal save_data()
-signal update_orbitsDB(planet_key,i)
+signal update_orbitsDB(which)
+
 
 
 
@@ -37,7 +39,7 @@ func _ready():
 		
 	self.map_layout()
 	layout.connect("orbit_defined", self, "set_orbits_controls")
-	self.connect("update_orbitsDB",Global, "update_orbitsDB")
+	self.connect("update_orbitsDB",Global, "update_toDB")
 	pass
 	
 func map_layout():
@@ -142,23 +144,34 @@ func Save_pressed():
 	var already_saved = Global.already_saved
 	var added_again = Global.added_again
 	
-	if already_saved > 0 && added_again == 0:
-		message_box.update_message("This Data was Already Saved! Do not Forget to Add before Saving", Color(1,0,0));
+	if already_saved > 0 && added_again == 0 && !Global.update_orbits:
+		message_box.update_message("This Data was Already Saved!", Color(1,0,0));
+		print("save case 1")
 		return
 	
 	if already_saved > 0 && added_again > 0:
 		message_box.update_message("Will Save only added data!", Color(1,0,0));
+		print("save case 2")
 		emit_signal("save_data")
 		return
 		
 	if already_saved == 0 && added_again == 0:
 		message_box.update_message("Please Add Planet Before Saving!", Color(1,0,0));
+		print("save case 3")
 		return
 		
 	if already_saved == 0 && added_again > 0:
 		message_box.update_message("Will Save only added data!", Color(1,0,0));
+		print("save case 4")
 		emit_signal("save_data") 
 		return
+		
+	if already_saved > 0 && added_again == 0 && Global.update_orbits:
+		print("save case 5")
+		message_box.update_message("Will Save Orbits!", Color(1,0,0));
+		emit_signal("update_orbitsDB", 9) 
+		return
+		 
 	
 	
 func Exit_pressed():
@@ -192,6 +205,7 @@ func orbit_selected(which, name, planet_key):
 	for i in range(Global.planets_data.size()):
 		if Global.planets_data[i][0] == orbits_name:
 			Global.orbits[planet_key] = i
+			Global.update_orbits = true
 	
 				
 	pass

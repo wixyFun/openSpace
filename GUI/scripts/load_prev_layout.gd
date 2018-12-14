@@ -4,7 +4,7 @@ class menu_grid is responsble for the layout of the extended
 		left-
 		right-
 """
-extends "res://menu_gui/scripts/base_grid.gd"
+extends "res://menu_gui/scripts/base_layout.gd"
 
 var right_grid
 var left_grid

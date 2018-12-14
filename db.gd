@@ -104,10 +104,10 @@ func fetch_all_tables(file):
 func fetch_data(file, table, query):
 	
 	var result 
-	var query1 = exits_statement % table 
+	var exists = exits_statement % table 
 	 
 	if prepare_db(file):
-		if table_exists(query1) == 1:
+		if (db.fetch_array(exists)).size() == 1:
 			result = db.fetch_array(query);
 		close_db()
 			

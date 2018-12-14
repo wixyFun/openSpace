@@ -28,7 +28,7 @@ func get_insert_statement():
 func has_saved_games():
 	
 	var table_list = fetch_all_tables(db_file)
-	
+
 	return table_list
 	
 func save_data(data_dict,orbit_array,saved):
@@ -126,7 +126,7 @@ func get_table_query(table_name):
 func get_data(table):
 	
 	var result
-	var statement = "SELECT * FROM %s";
+	var statement = "SELECT * FROM '%s'";
 	var query = statement % table
 	print(query)
 	result = self.fetch_data(db_file, table, query);
@@ -135,14 +135,17 @@ func get_data(table):
 	
 func load_from_table(table):
 	
-	var result
+	var result = null
 	var data = {}
 		
 	result = get_data(table)
+	
+	if result != null:
 		
-	for i in range(result.size()):
-		data[result[i].id] = [result[i].Name,result[i].Mass,result[i].Radius,result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz, result[i].Orbiting];
-		
+		for i in range(result.size()):
+			data[result[i].id] = [result[i].Name,result[i].Mass,result[i].Radius,result[i].X, result[i].Y, result[i].Z, result[i].Vx, result[i].Vy, result[i].Vz, result[i].Orbiting];
+	else:
+		var error = "No Data was Saved for this Project"		
 	return data
 	
 func update_orbitsDB():

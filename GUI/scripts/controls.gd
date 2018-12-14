@@ -35,7 +35,7 @@ func get_data_labels(labels_text):
 		
 	pass
 	
-func load_lineEdits(index, labels_quant):
+func load_lineEdits(index, labels_quant, data_dict):
 	
 	var name = str(index)+"_planet"
 	controls_dict[name] = []
@@ -47,7 +47,7 @@ func load_lineEdits(index, labels_quant):
 		new_txtEdit.expand_to_text_length = true
 		new_txtEdit.max_length = 20
 		new_txtEdit.placeholder_text = str(i)	
-		#new_txtEdit.text = str(planets_data[index][i])
+		new_txtEdit.text = str(data_dict[index][i])
 		controls_dict[name].append(new_txtEdit)
 	
 	pass

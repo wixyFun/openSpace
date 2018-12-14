@@ -5,21 +5,17 @@ contains: buttons with the prev. saved projects' names
 
 extends Node2D
 
-#outer container
-var Center = preload("res://GUI/scripts/center_container.gd")
-var center_container = Center.new()
 
-
-var Grid = preload("res://GUI/scripts/base_grid.gd")
+var Grid = preload("res://GUI/scripts/base_layout.gd")
 var outer_grid = Grid.new()
 var planetsOuter_grid = Grid.new()
 var left_grid = Grid.new()
 var inner_grid = Grid.new()
 
+var center_container = outer_grid.center_container
+var message_box = outer_grid.message_box
+var controls_dict = outer_grid.controls.controls_dict
 
-#to hold the prompts for the user
-var Mbox = preload("res://menu_gui/scripts/message_box.gd")
-var message_box = Mbox.new()
 
 
 #controls in the scene
@@ -42,7 +38,7 @@ func _ready():
 	self.prepare_leftGrid()
 	
 	self.connect_loadPrev_signals()
-	Global.get_button_controls(edit_buttons)
+	outer_grid.controls.get_button_controls(edit_buttons)
 	self.connect_edit_signals()
 	
 	
@@ -62,23 +58,22 @@ func map_layout():
 #TODO: the scroll if the number/size of the buttons exceeds the screen
 func connect_loadPrev_signals():
 	
-	Global.controls_dict["projects"].connect("item_selected", self, "project_pressed");
-	Global.controls_dict["Exit Game"].connect("pressed", self,"exit_pressed");
-	Global.controls_dict["Play New Game"].connect("pressed", self,"play_pressed");
+	controls_dict["projects"].connect("item_selected", self, "project_pressed");
+	controls_dict["Exit Game"].connect("pressed", self,"exit_pressed");
+	controls_dict["Play New Game"].connect("pressed", self,"play_pressed");
 	pass
 	
 func connect_edit_signals():
 	
-	Global.controls_dict["DELETE PROJECT"].connect("pressed", self, "project_delete_pressed");
-	Global.controls_dict["Save Changes"].connect("pressed", self, "project_update_pressed");
-	Global.controls_dict["Load Project"].connect("pressed", self, "project_load_pressed");
+	controls_dict["DELETE PROJECT"].connect("pressed", self, "project_delete_pressed");
+	controls_dict["Save Changes"].connect("pressed", self, "project_update_pressed");
+	controls_dict["Load Project"].connect("pressed", self, "project_load_pressed");
 	
 	pass
 	
 func project_pressed(which):
-	print(which)
 	
-	tableName = Global.controls_dict["projects"].get_item_text(which)
+	tableName = controls_dict["projects"].get_item_text(which)
 	if !Global.was_project_deleted(tableName):
 		self.prepare_planetsOuterGrid(tableName)
 	else:
@@ -88,7 +83,7 @@ func project_pressed(which):
 
 func play_pressed():
 	
-	Global.set_scene("res://menu_gui/NBodyScene.tscn")
+	Global.set_scene(Global.play_scene)
 	pass
 
 func exit_pressed():
@@ -109,12 +104,12 @@ func prepare_leftGrid():
 	
 	left_grid.set_up(1,30,40)
 	
-	Global.get_button_controls(["Play New Game","Exit Game"])
+	outer_grid.controls.get_button_controls(["Play New Game","Exit Game"])
 	
 	var prompt = "Choose a Project to Load or Edit:"
-	Global.get_option_control("projects", prompt, Global.projects_saved)
+	outer_grid.controls.get_option_control("projects", prompt, Global.projects_saved)
 	
-	left_grid.add_to_grid(start_buttons)
+	left_grid.add_to_grid(start_buttons, controls_dict)
 
 	pass
 	
@@ -127,24 +122,25 @@ func prepare_planetsOuterGrid(tableName):
 	else:#the first time
 		planetsOuter_grid.set_up(1, 30, 0)
 		planetsOuter_grid.add_child(inner_grid)
-		planetsOuter_grid.add_to_grid(edit_buttons)
-		inner_grid.set_up(Global.data_len,0,5)
+		planetsOuter_grid.add_to_grid(edit_buttons, controls_dict)
+		inner_grid.set_up(Global.planets_params,0,5)
 		
-	var labels_text = ["Name","Mass","Radius", "x ", "y ", "z ", "Vx ", "Vy ", "Vz ", "Orbiting"]
+	var labels_text = ["Name\n(any value)","Mass\n(positive)","Radius\n(positive)", "x\n(numeric) ", "y\n(numeric) ", "z\n(numeric)", "Vx\n(numeric)", "Vy\n(numeric)", "Vz\n(numeric)", "Orbiting\n(only id)"]
 	
 	#saves in to the planets_data	
-	if Global.load_fromTable("'"+tableName+"'"):
+	if Global.load_planets_data(tableName):
 		print("data added form the project")
 		
-		Global.get_data_labels(labels_text)
-		inner_grid.add_to_grid(labels_text)
+		outer_grid.controls.get_data_labels(labels_text)
+		inner_grid.add_to_grid(labels_text,controls_dict)
+	
 		
 		#creates the lineEdits control and
 		#fills with the data from planets_data
 		for i in range(Global.planets_data.size()):
 			var name = str(i)+"_planet"
-			Global.load_lineEdits(i, Global.data_len-1)
-			var control = Global.controls_dict[name]
+			outer_grid.controls.load_lineEdits(i, Global.planets_params,Global.planets_data)
+			var control = controls_dict[name]
 			
 			#add the textLines to the inner grid
 			for index in range(control.size()):
