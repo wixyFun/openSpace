@@ -135,7 +135,6 @@ func Add_pressed():
 		valueArray.append(temp)
 		
 	emit_signal("add_data",valueArray)
-			
 
 	pass
 
