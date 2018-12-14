@@ -134,7 +134,6 @@ func update_saved_projects(name):
 func load_saved_projects():
 	
 	var temp = db.has_saved_games()
-	print(temp)
 	
 	if temp != null:
 		
@@ -209,6 +208,7 @@ func add_data(temp_array):
 		#check name, x,y,z for duplicate under endex-[0,3,4,5]
 		if !self.has_data_duplicates(valueArray):
 			planets_data[planet_key] = valueArray
+			
 			orbits.append(-1)
 			db.orbits_inDB.append(-1)
 			added_again +=1
@@ -234,8 +234,6 @@ func save_toDB():
 	
 func update_toDB(which_param):
 	
-	print("updating orbits")
-	
 	if which_param == 9:
 		db.update_orbitsDB()
 	
@@ -251,6 +249,7 @@ func load_planets_data(table):
 	planets_data = db.load_from_table(table)
 	
 	if planets_data.empty():
+		emit_signal("update_message", "Project "+str(table)+" is empty or delted!!", Color(1,0,0))
 		return false
 	return true
 	

@@ -21,7 +21,7 @@ var controls_dict = outer_grid.controls.controls_dict
 
 
 #controls in the scene
-var edit_buttons = ["DELETE PROJECT", "Save Changes","Load Project"]
+var edit_buttons = ["DELETE PROJECT","Load Project"]
 var start_buttons = ["projects","Play New Game","Exit Game"]
 var tableName
 
@@ -69,7 +69,7 @@ func connect_loadPrev_signals():
 func connect_edit_signals():
 	
 	controls_dict["DELETE PROJECT"].connect("pressed", self, "project_delete_pressed");
-	controls_dict["Save Changes"].connect("pressed", self, "project_update_pressed");
+	#controls_dict["Save Changes"].connect("pressed", self, "project_update_pressed");
 	controls_dict["Load Project"].connect("pressed", self, "project_load_pressed");
 	
 	pass
@@ -79,6 +79,7 @@ func project_pressed(which):
 	tableName = controls_dict["projects"].get_item_text(which)
 	update_message("Edit or Delete Project "+str(tableName),Color(1,0,0))
 	if !Global.was_project_deleted(tableName):
+		Global.current_table = tableName
 		self.prepare_planetsOuterGrid(tableName)
 	else:
 		update_message("Project " +str(tableName)+" was already deleted",Color(1,0,0))
@@ -92,9 +93,7 @@ func play_pressed():
 
 func exit_pressed():
 	
-	print("deleted from grid")
 	for i in range(0,left_grid.get_child_count()):
-		print(left_grid.get_child(i))
 		left_grid.get_child(i).queue_free()
 		
 	message_box.message_label.queue_free()
@@ -134,7 +133,6 @@ func prepare_planetsOuterGrid(tableName):
 	
 	#saves in to the planets_data	
 	if Global.load_planets_data(tableName):
-		print("data added form the project")
 		
 		outer_grid.controls.get_data_labels(labels_text)
 		inner_grid.add_to_grid(labels_text,controls_dict)
@@ -158,7 +156,6 @@ func prepare_planetsOuterGrid(tableName):
 	
 func project_delete_pressed():
 	
-	print("the table name to drop:"+tableName)
 	return Global.drop_projects(tableName)
 	
 	pass
@@ -173,30 +170,30 @@ func project_load_pressed():
 	
 	pass
 	
-func project_update_pressed(table_name):
+func project_update_pressed():
 	#get the data from the text fields
 	
 	var prev_data = Global.planets_data.duplicate()
 	Global.clean_up_planets()
-	print(prev_data)
 	
 	var valueArray
-	var temp
 	
 	#get all the values from the labels
-	for planet_key in range(prev_data):
+	for planet_key in range(prev_data.size()):
 		var name = str(planet_key)+"_planet"
 		valueArray = []
-		valueArray = controls_dict[name]
-		Global.orbits[planet_key] = str(valueArray.pop_back())
-		Global.planets_data[planet_key] = valueArray
-		#emit_signal("add_data",valueArray)
+		for label in range(controls_dict[name].size()):
+			valueArray.append(controls_dict[name][label].text)
+			
+		emit_signal("add_data",valueArray)
 	
+	print("THE DATA")
+	print(Global.planets_data)
+	print(Global.current_table)
 	#drop the table 
 	
-	if Global.drop_projects(table_name):
+	if Global.drop_projects(Global.current_table):
 		#write new data to the table
-		Global.current_table = table_name
 		emit_signal("save_data")
 	
 	pass
