@@ -31,10 +31,12 @@ var already_saved
 var added_again
 var update_orbits = false
 
+var db_file = "res://godot.sql"
+
 signal update_message(prompt, color)
 signal add_orbits(planet_index)
 
-
+#TODO:validate orbits method
 
 func _ready():
 	
@@ -130,7 +132,9 @@ func update_saved_projects(name):
 	pass
 	
 func load_saved_projects():
+	
 	var temp = db.has_saved_games()
+	print(temp)
 	
 	if temp != null:
 		
@@ -146,7 +150,10 @@ func load_saved_projects():
 func validate_data(new_text, label, index):
 	
 	if index > 2:
-		return validate_floats(new_text, label)
+		if index == 9:
+			return validate_orbit(new_text,label)
+		else:
+			return validate_floats(new_text, label)
 	else:
 		return validate_positive(new_text, label)
 
@@ -246,3 +253,18 @@ func load_planets_data(table):
 	if planets_data.empty():
 		return false
 	return true
+	
+func drop_projects(project):
+	
+	var result = false
+	result = db.drop_table(db_file,project)
+	
+	if result:
+		update_deleted_projects(project)
+		
+	return result
+	
+func validate_orbit(new_text,label):
+	
+	return true
+		

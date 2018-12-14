@@ -2,6 +2,8 @@
 load_prev menu is the menu screen, appears after start menu->load prev pressed
 contains: buttons with the prev. saved projects' names 
 """
+#TODO: add id to the data table displayed and scroll
+#		data validation, name validation,duplicates validation
 
 extends Node2D
 
@@ -27,6 +29,7 @@ func _ready():
 	
 	message_box.get_mbox_ready("Edit or Delete Data")
 	center_container.set_sizeTo_screen(1)
+	Global.connect("update_message", self, "update_message")
 	
 	#add children containers in order
 	self.map_layout()
@@ -49,7 +52,7 @@ func map_layout():
 	#vBox_right.add_child(message_box)
 	outer_grid.add_child(left_grid)
 	outer_grid.add_child(planetsOuter_grid)
-
+	
 	center_container.add_child(outer_grid)
 	self.add_child(center_container)
 	
@@ -74,11 +77,12 @@ func connect_edit_signals():
 func project_pressed(which):
 	
 	tableName = controls_dict["projects"].get_item_text(which)
+	update_message("Edit or Delete Project "+str(tableName),Color(1,0,0))
 	if !Global.was_project_deleted(tableName):
 		self.prepare_planetsOuterGrid(tableName)
 	else:
-		var error = "Project was already deleted!!"
-	
+		update_message("Project " +str(tableName)+" was already deleted",Color(1,0,0))
+		inner_grid.clean_up()
 	pass
 
 func play_pressed():
@@ -121,6 +125,7 @@ func prepare_planetsOuterGrid(tableName):
 		Global.clean_up_planets()
 	else:#the first time
 		planetsOuter_grid.set_up(1, 30, 0)
+		planetsOuter_grid.add_child(message_box)
 		planetsOuter_grid.add_child(inner_grid)
 		planetsOuter_grid.add_to_grid(edit_buttons, controls_dict)
 		inner_grid.set_up(Global.planets_params,0,5)
@@ -145,11 +150,8 @@ func prepare_planetsOuterGrid(tableName):
 			#add the textLines to the inner grid
 			for index in range(control.size()):
 				inner_grid.add_child(control[index])
-	
-			
-		
-		#else:
-		#	message_box.update_message("This Project Could not be Loaded", Color(1,0,0));
+	else:
+		update_message("Project " + str(tableName)+" Could not be Loaded", Color(1,0,0));
 	
 	pass
 	
@@ -157,7 +159,7 @@ func prepare_planetsOuterGrid(tableName):
 func project_delete_pressed():
 	
 	print("the table name to drop:"+tableName)
-	Global.drop_project(tableName)
+	return Global.drop_projects(tableName)
 	
 	pass
 	
@@ -169,15 +171,39 @@ func project_load_pressed():
 	#load the play scene spawning planets
 	
 	
-	
 	pass
 	
 func project_update_pressed(table_name):
 	#get the data from the text fields
-	#drop the table 
-	#write new data to the table
 	
+	var prev_data = Global.planets_data.duplicate()
+	Global.clean_up_planets()
+	print(prev_data)
+	
+	var valueArray
+	var temp
+	
+	#get all the values from the labels
+	for planet_key in range(prev_data):
+		var name = str(planet_key)+"_planet"
+		valueArray = []
+		valueArray = controls_dict[name]
+		Global.orbits[planet_key] = str(valueArray.pop_back())
+		Global.planets_data[planet_key] = valueArray
+		#emit_signal("add_data",valueArray)
+	
+	#drop the table 
+	
+	if Global.drop_projects(table_name):
+		#write new data to the table
+		Global.current_table = table_name
+		emit_signal("save_data")
 	
 	pass
 
+func update_message(text, color):
+	
+	message_box.update_message(text,color)
+	
+	pass
 

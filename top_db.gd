@@ -13,7 +13,7 @@ signal set_current_table(table)
 
 func _ready():
 	
-	#ready = plugin.is_plugin_ready()
+	
 	
 	pass
 	

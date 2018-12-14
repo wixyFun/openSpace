@@ -66,6 +66,8 @@ func drop_table(file, table):
 #open the database 
 func prepare_db(file):
 	
+	print(file)
+	
 	
 	print("inside the open in db")
 	if !db.open_db(file):
@@ -96,6 +98,7 @@ func fetch_all_tables(file):
 	
 	if prepare_db(file):
 		result = db.fetch_array(query);
+		print(result)
 		close_db()
 		
 	return result
