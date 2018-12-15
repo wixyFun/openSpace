@@ -41,10 +41,11 @@ func setTimeScale(ts):
 func getTimeScale():
 	return timeScale
 	
-func addPlanet(m, x, y, z, vx, vy, vz):
+func addPlanet(m, r, x, y, z, vx, vy, vz):
 	$NBodyPhysics.addBody(m,x,y,z,vx,vy,vz)
 	arrayPlanets.push_back(planet.instance())
 	arrayPlanets.back().translation = Vector3(x,y,z)
+	arrayPlanets.back().scale = Vector3(r, r, r)
 	add_child(arrayPlanets.back())
 	
 func updateTranslation():

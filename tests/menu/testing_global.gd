@@ -10,6 +10,9 @@ func tests():
 	assert_true(gb != null, "class loaded true")
 	endcase()
 	
+	
+		
+	
 	testcase("testing get_buttons_ready")
 	
 	gb.get_buttons_ready()
