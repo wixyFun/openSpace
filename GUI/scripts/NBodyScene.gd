@@ -29,6 +29,8 @@ func _ready():
 	
 	if !Global.planets_data.empty():
 		add_planets()
+		set_orbits(Global.planets_data, Global.orbits)
+		
 	
 	
 	#$NBody.setTimeScale(10)
@@ -97,7 +99,6 @@ func get_popUp_ready():
 	grid.controls_dict["Simulate"].connect("pressed", self, "Simulate_pressed")
 	
 func speed_up():
-	# Move forward/zoom in
 	timescale *= 1.2
 	$NBody.setTimeScale(timescale)
 

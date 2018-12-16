@@ -171,7 +171,6 @@ func project_load_pressed():
 	else:
 		Global.set_scene(Global.play_scene)
 	
-	
 	pass
 	
 func project_update_pressed():
@@ -191,9 +190,6 @@ func project_update_pressed():
 			
 		emit_signal("add_data",valueArray)
 	
-	print("THE DATA")
-	print(Global.planets_data)
-	print(Global.current_table)
 	#drop the table 
 	
 	if Global.drop_projects(Global.current_table):
