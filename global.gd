@@ -260,6 +260,10 @@ func drop_projects(project):
 	
 	if result:
 		update_deleted_projects(project)
+		clean_up_planets()
+	else:
+		emit_signal("update_message", "Cannot Delete Project. Please Try Later", Color(1,0,0))
+	
 		
 	return result
 	

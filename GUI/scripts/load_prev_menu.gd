@@ -166,7 +166,10 @@ func project_delete_pressed():
 #will need to go to the play scene and add planets	
 func project_load_pressed():
 	
-	Global.set_scene(Global.play_scene)
+	if Global.planets_data.size() == 0:
+		update_message("Cannot Load without a Data!!!Project was deleted!", Color(1,0,0))
+	else:
+		Global.set_scene(Global.play_scene)
 	
 	
 	pass
