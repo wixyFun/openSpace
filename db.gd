@@ -7,16 +7,22 @@ extends Node
 
 # class member variables go here, for example:
 const SQLite = preload("res://lib/gdsqlite.gdns")
-var plugin = SQLite.new()
+var db = SQLite.new()
 var plugin_ready = false
+
+
 
 var exits_statement = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s';" 
 
 func _ready():
 	
-	plugin.init()
-	if ! plugin == null:
+	db.init()
+	print("the db library "+str(db))
+	if ! (db == null):
 		plugin_ready = true
+		print("library loaded")
+	else:
+		print("db_library is not loaded")
 	print("inside the ready of the db")
 	
 	pass
@@ -26,20 +32,22 @@ func save(file,table_query,table,query):
 	var result
 	
 	if prepare_db(file) && get_tableReady(table_query):
-		result = plugin.query(query)
+		result = db.query(query)
+		print("in the save do query "+ str(result))
 		close_db()
-		
+	
 	return result
 	
 func change(file, table, query):
 	
 	var result = false
-	var query1 = exits_statement % table 
+	var exists = exits_statement % table 
 	
 	if prepare_db(file):
-		if table_exists(query1) == 1:
-			result = plugin.query(query)
-	close_db()
+		if (db.fetch_array(exists)).size() == 1:
+			result = db.query(query)
+		
+		close_db()
 			
 	return result
 	
@@ -50,29 +58,36 @@ func drop_table(file, table):
 	var query = statement % table
 	
 	if prepare_db(file):
-		result = plugin.query(query)
+		result = db.query(query)
+		close_db()
 		
 	return result
 		
 #open the database 
 func prepare_db(file):
 	
+	print(file)
+	
+	
 	print("inside the open in db")
-	if !plugin.open_db(file):
+	if !db.open_db(file):
+		
+		print("pluggin did not open")
 		return false
 	return true
 
 #TODO fins a way to see if table exists already
 func get_tableReady(query):
 	
-	var result = plugin.query(query);
-	print(result)
-
+	var result = db.query(query);
+	
+	print("in the get table ready "+str(result))
+	
 	return result
 
 
 func close_db():
-	plugin.close()
+	db.close()
 	pass
 
 func fetch_all_tables(file):
@@ -82,7 +97,9 @@ func fetch_all_tables(file):
 	var result 
 	
 	if prepare_db(file):
-		result = plugin.fetch_array(query);
+		result = db.fetch_array(query);
+		print(result)
+		close_db()
 		
 	return result
 	
@@ -90,18 +107,21 @@ func fetch_all_tables(file):
 func fetch_data(file, table, query):
 	
 	var result 
-	var query1 = exits_statement % table 
+	var exists = exits_statement % table 
 	 
 	if prepare_db(file):
-		if table_exists(query1) == 1:
-			result = plugin.fetch_array(query);
-	close_db()
+		if (db.fetch_array(exists)).size() == 1:
+			result = db.fetch_array(query);
+		close_db()
 			
 	return result
 	
 func is_plugin_ready():
 
 	return plugin_ready
+	
+
+	
 	
 	
 
