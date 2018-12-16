@@ -14,6 +14,8 @@ var timescale = 10
 
 
 
+
+
 func _ready():
 	
 	self.get_plus_ready()
@@ -30,6 +32,7 @@ func _ready():
 	if !Global.planets_data.empty():
 		add_planets()
 		set_orbits(Global.planets_data, Global.orbits)
+		grid.controls.controls_dict["+"].hide()
 		
 	
 	
@@ -56,6 +59,7 @@ func Simulate_pressed():
 		popUp_menu.message_box.update_message("Enter Data for Planet/s First", Color(1,0,0))
 	else:
 		$PopupPanel.hide()
+		grid.controls.controls_dict["+"].hide()
 		self.add_planets()
 		camera_focused = true
 	
