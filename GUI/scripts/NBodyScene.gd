@@ -12,11 +12,13 @@ var G = 2.95912208286e-4
 
 var timescale = 10
 
+
+
 func _ready():
 	
 	self.get_plus_ready()
 	
-	self.get_speed_buttons()
+	self.get_inGame_buttons()
 	popUp_menu.set_lists(buttons_list,data_labels)
 	popUp_menu.ready_menu()
 	self.get_popUp_ready()
@@ -24,6 +26,9 @@ func _ready():
 	
 	$Camera.look_at_from_position(Vector3(0,0,100), Vector3(0,0,0), Vector3(0,0,1))
 	$NBody.init(G)
+	
+	if !Global.planets_data.empty():
+		add_planets()
 	
 	
 	#$NBody.setTimeScale(10)
@@ -61,25 +66,32 @@ func get_plus_ready():
 	grid.controls_dict["+"].connect("pressed", self, "display_menu")
 	
 	
-func get_speed_buttons():
+func get_inGame_buttons():
 
 	var window = OS.window_size
-	grid.controls.get_button_controls(["slow down", "speed up"])
+	grid.controls.get_button_controls(["slow down", "speed up","go back"])
 	self.add_child(grid.controls_dict["speed up"])
 	self.add_child(grid.controls_dict["slow down"])
+	self.add_child(grid.controls_dict["go back"])
 	grid.controls_dict["speed up"].set_position(Vector2(window.x-100,window.y-100))
 	grid.controls_dict["slow down"].set_position(Vector2(window.x-200,window.y-100))
+	grid.controls_dict["go back"].set_position(Vector2(window.x+50-window.x, window.y-96))
 	grid.controls_dict["speed up"].connect("pressed", self, "speed_up")
 	grid.controls_dict["slow down"].connect("pressed", self, "slow_down")
+	grid.controls_dict["go back"].connect("pressed", self, "go_back")
+	
 	
 func display_menu():
 	camera_focused = false
 	$PopupPanel.popup_centered_ratio(0.75)
+	$PopupPanel/ScrollContainer.rect_min_size = OS.window_size*0.75
 	
 	#grid.controls_dict["+"].hide()
 	
 func get_popUp_ready():
-	$PopupPanel.add_child(popUp_menu)
+	#$PopupPanel.add_child(popUp_menu)
+	
+	$PopupPanel/ScrollContainer/CenterContainer.add_child(popUp_menu)
 	
 	#get the Simulate ready
 	grid.controls_dict["Simulate"].connect("pressed", self, "Simulate_pressed")
@@ -93,6 +105,11 @@ func speed_up():
 func slow_down():
 	timescale /= 1.2
 	$NBody.setTimeScale(timescale)
+	
+func go_back():
+	
+	Global.set_scene(Global.prev_scene)
+	pass
 
 func set_orbits(planets, orbits):
 	for i in range(0, orbits.size()):

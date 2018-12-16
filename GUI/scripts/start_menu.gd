@@ -51,6 +51,7 @@ func connect_start_signals(all):
 	
 func play_pressed():
 	
+	Global.set_prev_scene(Global.start_screen)
 	Global.set_scene(Global.play_scene)
 	pass
 

@@ -7,7 +7,7 @@ var current_scene
 var start_screen = "res://GUI/Start_scene.tscn"
 var play_scene = "res://GUI/NBodyScene.tscn"
 var load_prev_scene = "res://GUI/Load_prev_scene.tscn"
-var end_screen = start_screen
+var prev_scene
 
 #the number of the parameters for the planet's data
 var SQLite = preload("res://top_db.gd")
@@ -266,4 +266,9 @@ func drop_projects(project):
 func validate_orbit(new_text,label):
 	
 	return true
+	
+func set_prev_scene(scene):
+	prev_scene = scene
+	
+	pass
 		

@@ -2,8 +2,7 @@
 load_prev menu is the menu screen, appears after start menu->load prev pressed
 contains: buttons with the prev. saved projects' names 
 """
-#TODO: add id to the data table displayed and scroll
-#		data validation, name validation,duplicates validation
+ 
 
 extends Node2D
 
@@ -27,8 +26,11 @@ var tableName
 
 func _ready():
 	
+	Global.set_prev_scene(Global.load_prev_scene)
+	
 	message_box.get_mbox_ready("Edit or Delete Data")
 	center_container.set_sizeTo_screen(1)
+	outer_grid.scroll_container.rect_min_size = OS.window_size
 	Global.connect("update_message", self, "update_message")
 	
 	#add children containers in order
@@ -54,7 +56,8 @@ func map_layout():
 	outer_grid.add_child(planetsOuter_grid)
 	
 	center_container.add_child(outer_grid)
-	self.add_child(center_container)
+	outer_grid.scroll_container.add_child(center_container)
+	self.add_child(outer_grid.scroll_container)
 	
 	pass
 
@@ -163,9 +166,7 @@ func project_delete_pressed():
 #will need to go to the play scene and add planets	
 func project_load_pressed():
 	
-	#check if changes were made from the text field
-	#recheck and save the data
-	#load the play scene spawning planets
+	Global.set_scene(Global.play_scene)
 	
 	
 	pass
