@@ -159,7 +159,15 @@ func prepare_planetsOuterGrid(tableName):
 	
 func project_delete_pressed():
 	
-	return Global.drop_projects(tableName)
+	var index = outer_grid.controls.controls_dict["projects"].get_selected_id()
+	print(index)
+	
+	if Global.drop_projects(tableName):
+		print("projectssss")
+		outer_grid.controls.controls_dict["projects"].remove_item(index)
+		update()
+	
+	
 	
 	pass
 	
@@ -167,7 +175,7 @@ func project_delete_pressed():
 func project_load_pressed():
 	
 	if Global.planets_data.size() == 0:
-		update_message("Cannot Load without a Data!!!Project was deleted!", Color(1,0,0))
+		update_message("Cannot Load without Data!!! Project was deleted!", Color(1,0,0))
 	else:
 		Global.set_scene(Global.play_scene)
 	

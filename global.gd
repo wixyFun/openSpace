@@ -215,7 +215,7 @@ func add_data(temp_array):
 			
 			emit_signal("add_orbits", planets_data.size()-1)
 
-			emit_signal("update_message","Added Another Planet. So Far There are: " + str(planet_key + 1) + " planets", Color(2,2,2))
+			emit_signal("update_message","Added Another Planet. So Far There is/are: " + str(planet_key + 1) + " planet/s", Color(2,2,2))
 
 	pass
 	
@@ -261,6 +261,7 @@ func drop_projects(project):
 	if result:
 		update_deleted_projects(project)
 		clean_up_planets()
+		emit_signal("update_message", "Project was Deleted", Color(1,1,1))
 	else:
 		emit_signal("update_message", "Cannot Delete Project. Please Try Later", Color(1,0,0))
 	

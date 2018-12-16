@@ -145,28 +145,28 @@ func Save_pressed():
 	
 	if already_saved > 0 && added_again == 0 && !Global.update_orbits:
 		message_box.update_message("This Data was Already Saved!", Color(1,0,0));
-		print("save case 1")
+		
 		return
 	
 	if already_saved > 0 && added_again > 0:
 		message_box.update_message("Will Save only added data!", Color(1,0,0));
-		print("save case 2")
+		
 		emit_signal("save_data")
 		return
 		
 	if already_saved == 0 && added_again == 0:
 		message_box.update_message("Please Add Planet Before Saving!", Color(1,0,0));
-		print("save case 3")
+		
 		return
 		
 	if already_saved == 0 && added_again > 0:
 		message_box.update_message("Will Save only added data!", Color(1,0,0));
-		print("save case 4")
+		
 		emit_signal("save_data") 
 		return
 		
 	if already_saved > 0 && added_again == 0 && Global.update_orbits:
-		print("save case 5")
+	
 		message_box.update_message("Will Save Orbits!", Color(1,0,0));
 		emit_signal("update_orbitsDB", 9) 
 		return
