@@ -1,6 +1,9 @@
-README
+# Synopsis
 
-**-prerequisites**
+OpenSpace is a Godot-based 3D N-Body scaled galaxy simulator with interactive camera and timescale. 
+It has convenience functions to automatically circularize orbits.
+
+# Prerequisites
 
 1. Download and install Godot Engine 3.0.6: [https://godotengine.org/](https://godotengine.org/) 
 
@@ -18,7 +21,7 @@ README
 
 5. Download precompiled libraries for SQLite database or compile your own: [https://github.com/khairul169](https://github.com/khairul169) and have lib folder containing libraries in the project folder
 
-**-build application:**
+# Building
 
 1. Compile the C++ bindings for physics code
 
@@ -32,7 +35,7 @@ README
 
     5. $ scons platform=<windows/linux/osx> 
 
-**-install and run:**
+# Running
 
 1. Open Godot Editor
 
@@ -40,7 +43,7 @@ README
 
 3. Click run to run the project 
 
-**-test:**
+# Testing
 
 1. For testing the godot script, please refer to this detailed post about unit testing script used in the project and an example on how to run the script and create more tests: 
 
@@ -54,7 +57,7 @@ README
 
     4. Uses Doctest framework for unit testing
 
-**-operate application :**
+# Instructions
 
 1. Add a planet
 
@@ -110,7 +113,7 @@ README
 
     21. Use arrow keys to move the camera around 
 
-**-documentation:**
+# Developer Documentation
 
 * GUI Classes:
 

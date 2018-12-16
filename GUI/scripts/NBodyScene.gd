@@ -9,6 +9,9 @@ var buttons_list = ["Add","Simulate","Save", "Exit"]
 
 var camera_focused = false
 var G = 2.95912208286e-4
+
+var timescale = 10
+
 func _ready():
 	
 	self.get_plus_ready()
@@ -83,11 +86,13 @@ func get_popUp_ready():
 	
 func speed_up():
 	# Move forward/zoom in
-	$Camera.translate(Vector3(0,0,-10))
+	timescale *= 1.2
+	$NBody.setTimeScale(timescale)
 
 	
 func slow_down():
-	$Camera.translate(Vector3(0,0,10))
+	timescale /= 1.2
+	$NBody.setTimeScale(timescale)
 
 func set_orbits(planets, orbits):
 	for i in range(0, orbits.size()):
@@ -155,6 +160,6 @@ func add_planets():
 		var Vz = planets_data[i][8]
 		
 		$NBody.addPlanet(mass, radius, X, Y, Z, Vx, Vy, Vz)
-		$NBody.setTimeScale(10)
+		$NBody.setTimeScale(timescale)
 		$NBody.unPause()
 		#TODO: change the color of the planet, radius, have a legend nnext to the planet
