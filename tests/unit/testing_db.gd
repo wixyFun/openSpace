@@ -17,12 +17,12 @@ var exits_statement = "SELECT name FROM sqlite_master WHERE type='table' AND nam
 
 func tests():
 	
-	
+	"""
 	testcase("testing set_db_file")
 	db_top.set_db_file(db_file)
 	assert_true(db_top.db_file == db_file, "db was changed")
 	endcase()
-	
+	"""
 	
 	testcase("testing prepare_db")
 	result = db.prepare_db(db_file)
