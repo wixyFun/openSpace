@@ -147,7 +147,7 @@ func load_from_table(table):
 	else:
 		var error = "No Data was Saved for this Project"		
 	return data
-	
+
 func update_orbitsDB():
 	
 	var statement = "UPDATE '"+Global.current_table+"' SET Orbiting = '%s' WHERE id = '%s';"

@@ -31,9 +31,9 @@ func _ready():
 	
 	if !Global.planets_data.empty():
 		add_planets()
-		set_orbits(Global.planets_data, Global.orbits)
+		# set_orbits(Global.planets_data, Global.orbits)
 		grid.controls.controls_dict["+"].hide()
-		
+		camera_focused = true
 	
 	
 	#$NBody.setTimeScale(10)
