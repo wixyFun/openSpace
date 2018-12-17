@@ -96,6 +96,8 @@ func play_pressed():
 
 func exit_pressed():
 	
+
+	
 	for i in range(0,left_grid.get_child_count()):
 		left_grid.get_child(i).queue_free()
 		

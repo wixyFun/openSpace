@@ -113,6 +113,9 @@ func slow_down():
 	
 func go_back():
 	
+	reset()
+	Global.clean_up()
+	
 	Global.set_scene(Global.prev_scene)
 	pass
 
@@ -185,3 +188,14 @@ func add_planets():
 		$NBody.setTimeScale(timescale)
 		$NBody.unPause()
 		#TODO: change the color of the planet, radius, have a legend nnext to the planet
+		
+		
+func reset():
+	
+	#popUp_menu.reset()
+	
+	if $NBody.get_child_count() !=0:
+		for child in $NBody.get_children():
+			child.queue_free()
+	
+	pass

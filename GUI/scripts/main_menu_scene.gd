@@ -214,3 +214,20 @@ func update_message(text, color):
 	message_box.update_message(text,color)
 	
 	pass
+	
+func reset():
+	
+	layout.reset()
+	
+	delete_children(hBox)
+	delete_children(center_container)
+	delete_children(vBox)
+	
+	pass
+	
+func delete_children(parent):
+	
+	if parent.get_child_count() != 0:
+		for child in parent.get_children():
+			parent.queue_free() 
+	pass

@@ -58,7 +58,11 @@ func set_scene(scene):
 	
 	if current_scene != null :
 	   #clean up the current scene
-	   current_scene.queue_free()
+		if current_scene.get_child_count() != 0:
+			for child in current_scene.get_children():
+				child.queue_free()
+				
+		current_scene.queue_free()
 	
 	var scene_res = ResourceLoader.load(scene)
 	current_scene= scene_res.instance()
@@ -66,12 +70,15 @@ func set_scene(scene):
 	
 	pass
 				
-func clean_up_planets():
+func clean_up():
+	
 	if !Global.planets_data.empty():
 		var planets= Global.planets_data.keys()
 		
 		for planet in planets:
 			Global.planets_data.erase(planet)
+			
+		Global.orbits.clear()
 
 	pass
 
@@ -260,7 +267,7 @@ func drop_projects(project):
 	
 	if result:
 		update_deleted_projects(project)
-		clean_up_planets()
+		clean_up()
 		emit_signal("update_message", "Project was Deleted", Color(1,1,1))
 	else:
 		emit_signal("update_message", "Cannot Delete Project. Please Try Later", Color(1,0,0))
