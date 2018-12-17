@@ -254,6 +254,10 @@ func set_current_table(table):
 func load_planets_data(table):
 	
 	planets_data = db.load_from_table(table)
+	orbits = []
+	for i in range (planets_data.size()):
+		orbits.push_back(int(planets_data[i][9]))
+	print(planets_data)
 	
 	if planets_data.empty():
 		emit_signal("update_message", "Project "+str(table)+" is empty or delted!!", Color(1,0,0))
