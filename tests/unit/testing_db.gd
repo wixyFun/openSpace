@@ -1,50 +1,70 @@
 extends "res://tests/menu/unittest.gd"
 
 # class member variables go here, for example:
-const SQLite = preload("res://db.gd")
+var SQLite = load("res://db.gd")
 var db = SQLite.new()
+
+var SQ2 = load("res://top_db.gd")
+var db_top = SQ2.new()
 const db_file = "res://godot_testing.sql"
-var result
+var result = false
+var table_query
+var query
+
+var statement = "SELECT * FROM '%s'";
+
+var exits_statement = "SELECT name FROM sqlite_master WHERE type='table' AND name='%s';" 
 
 func tests():
 	
-	testcase("testing db.gd")
-	assert_true(db.plugin_ready == true, "library has loaded")
+	
+	testcase("testing set_db_file")
+	db_top.set_db_file(db_file)
+	assert_true(db_top.db_file == db_file, "db was changed")
 	endcase()
+	
 	
 	testcase("testing prepare_db")
-	db.prepare(db_file)
-	assert_true(db == true, "db_file can be opened")
+	result = db.prepare_db(db_file)
+	assert_true(result == true, "db_file can be opened")
 	endcase()
 	
-	testcase("testing get_tableReady() and fetch_all_tables()")
+	testcase("testing get_table_ready()")
 	
-	var query = "CREATE TABLE IF NOT EXISTS 'orange' (";
-	query += "id integer PRIMARY KEY,";
-	query += "Name text NOT NULL,";
-	query += "Mass float NOT NULL,";
-	query += "Radius float NOT NULL,";
-	query += "X float NOT NULL,";
-	query += "Y float NOT NULL,";
-	query += "Z float NOT NULL,";
-	query += "Vx float NOT NULL,";
-	query += "Vy float NOT NULL,";
-	query += "Vz float NOT NULL";
-	#query += "Orbiting text NOT NULL";
-	query += ");";
+	table_query = "CREATE TABLE IF NOT EXISTS 'orange' (";
+	table_query += "Name text NOT NULL";
+	table_query += ");";
 	
-	result = db.get_tableReady(query)
+	result = db.get_tableReady(table_query)
 	assert_true(result == true, "table creation sucsessfull")
 	
-	result = db.fetch_all_tables(db_file)
-	
-	assert_true(result.find("orange") == true, "table was created")
-	endcase()
-	
-	testcase("testing closing_db")
 	db.close_db()
-	assert_true(db == null, "db_file can be closed")
 	endcase()
 	
+	testcase("fetch tables")
 	
+	result = db.fetch_all_tables(db_file)
+	assert_true(result[0].name == 'orange', "table was created")
 	
+	endcase()
+	
+	testcase("save data")
+	
+	query = "INSERT INTO 'orange'" 
+	query += "(Name)"
+	query += "VALUES('Big Orange');"
+	
+	result = db.save(db_file,table_query,'orange',query)
+	
+	assert_true(result == true, "saved data into table successful")
+	
+	endcase()
+	
+	testcase("fetch all data")
+	
+	query = statement % 'orange'
+	result = db.fetch_data(db_file, 'orange', query);
+	
+	assert_true(result[0].Name == 'Big Orange', "retrieval of saved data from table successful")
+	
+	endcase()

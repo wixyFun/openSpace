@@ -11,12 +11,11 @@ func _init():
     quit()
 	
 """
-"""
+
 func _init():  
     load('res://tests/menu/unittest.gd').run([
         'res://tests/unit/testing_db.gd',
-		
-    ])
+		'res://tests/menu/testing_global.gd',
+		])
     quit()
 	
-"""
